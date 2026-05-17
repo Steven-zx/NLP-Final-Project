@@ -1,0 +1,105 @@
+================================================================================
+TRANSFORMER MODEL EVALUATION REPORT
+Model: distilbert-base-multilingual-cased
+================================================================================
+
+Report Generated: 2026-05-06 23:59:48
+Test Set Size: 243 samples
+Average Inference Time: 175.97ms per sample
+
+--------------------------------------------------------------------------------
+THRESHOLD-BASED EVALUATION
+--------------------------------------------------------------------------------
+
+THRESHOLD: 0.50
+  Accuracy:  0.7160
+  Precision: 0.7423
+  Recall:    0.8834
+  F1-Score:  0.8067
+
+  Confusion Matrix:
+    True Negatives:  30
+    False Positives: 50
+    False Negatives: 19
+    True Positives:  144
+
+  Class Distribution (Predicted):
+    Non-Hate: 49 samples
+    Hate:     194 samples
+
+THRESHOLD: 0.60
+  Accuracy:  0.6996
+  Precision: 0.8169
+  Recall:    0.7117
+  F1-Score:  0.7607
+
+  Confusion Matrix:
+    True Negatives:  54
+    False Positives: 26
+    False Negatives: 47
+    True Positives:  116
+
+  Class Distribution (Predicted):
+    Non-Hate: 101 samples
+    Hate:     142 samples
+
+THRESHOLD: 0.70
+  Accuracy:  0.6790
+  Precision: 0.8400
+  Recall:    0.6442
+  F1-Score:  0.7292
+
+  Confusion Matrix:
+    True Negatives:  60
+    False Positives: 20
+    False Negatives: 58
+    True Positives:  105
+
+  Class Distribution (Predicted):
+    Non-Hate: 118 samples
+    Hate:     125 samples
+
+THRESHOLD: 0.80
+  Accuracy:  0.6584
+  Precision: 0.8571
+  Recall:    0.5890
+  F1-Score:  0.6982
+
+  Confusion Matrix:
+    True Negatives:  64
+    False Positives: 16
+    False Negatives: 67
+    True Positives:  96
+
+  Class Distribution (Predicted):
+    Non-Hate: 131 samples
+    Hate:     112 samples
+
+THRESHOLD: 0.90
+  Accuracy:  0.6667
+  Precision: 0.9020
+  Recall:    0.5644
+  F1-Score:  0.6943
+
+  Confusion Matrix:
+    True Negatives:  70
+    False Positives: 10
+    False Negatives: 71
+    True Positives:  92
+
+  Class Distribution (Predicted):
+    Non-Hate: 141 samples
+    Hate:     102 samples
+
+--------------------------------------------------------------------------------
+MODEL CONFIGURATION
+--------------------------------------------------------------------------------
+Pretrained Model: distilbert-base-multilingual-cased
+Max Sequence Length: 128
+Batch Size: 8
+Learning Rate: 2e-05
+Epochs: 1
+Warmup Ratio: 0.1
+Weight Decay: 0.01
+FP16 Training: False
+Random Seed: 42

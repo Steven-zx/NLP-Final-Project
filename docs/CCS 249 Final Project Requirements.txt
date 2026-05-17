@@ -1,0 +1,109 @@
+                   West Visayas State University
+               COLLEGE OF INFORMATION AND COMMUNICATIONS TECHNOLOGY
+                                     Luna St., La Paz, Iloilo City 5000
+                                            Iloilo, Philippines
+               * Trunkline: (063) (033) 320-0870 loc 1403 * Telefax No.: (033) 320-0879
+                    * Website: www.wvsu.edu.ph       * Email Address: cict@wvsu.edu.ph
+
+
+
+             CCS 249 Final Project Requirements
+
+Requirements
+       For the Final Project in CCS 249, you and your group members are
+required to develop and submit an NLP System, which apply concepts
+discussed in the subject, from text preprocessing to get the features of
+the training corpus, to developing models, and evaluating said models.
+      The NLP system will consist of two components:
+      a. A Backend server that will hold all of the NLP methods. The
+         Flask framework for developing the backend is highly
+         recommended the backend.
+         Flask For Beginners: https://www.ffnext.io/blog/python-
+         backend-with-flask-for-beginners
+      b. A simple Frontend that will accept user input, communicate
+         with the backend via API, and display the output. Any
+         frameworks/SDKs can be utilized.
+      Two documents are to be prepared:
+      a. A software documentation encompassing the overview,
+         introduction, features, technical aspects, and functional
+         requirements of the NLP system.
+
+      b. A short presentation is prepared to present the application’s
+         purpose, core features and a demonstration of the
+         application's navigating and core features.
+      As for the groupings, a group can consist of up to 2-5 members.
+       The use of Python modules/libraries for preprocessing, model
+training, and evaluation is permitted as long as it is disclosed in the
+software documentation.
+      The use of third-party Language Models, Classifiers, and GPTs,
+especially APIs is prohibited. Models should be developed and trained by
+the group. However, fine tuning a pretrained LLM model is allowed.
+                  West Visayas State University
+              COLLEGE OF INFORMATION AND COMMUNICATIONS TECHNOLOGY
+                                    Luna St., La Paz, Iloilo City 5000
+                                           Iloilo, Philippines
+              * Trunkline: (063) (033) 320-0870 loc 1403 * Telefax No.: (033) 320-0879
+                   * Website: www.wvsu.edu.ph       * Email Address: cict@wvsu.edu.ph
+
+
+     Finally, an assignment on the LMS will be created later for
+submitting the necessary files.
+
+
+Specific requirements for submission:
+1. Presentation
+      a. A short PowerPoint/pdf presentation file to be presented at a
+         scheduled date.
+      b. Content of the presentation should include the following:
+             i. Problem statement and purpose of the app
+            ii. Identified the training corpora appropriate for the
+                application.
+           iii. Text Preprocessing/Processing techniques explanation
+                and implementation.
+           iv. NLP Task identified, explained and its implementation.
+            v. Model Training and Development
+           vi. Evaluation of the model
+      c. Presentation time should be 5-10 minutes long
+      d. A 5-10 minute Q&A session
+
+2. A software documentation listing the technical aspects of the
+   developed NLP system.
+      a. The documentation must contain the following sections:
+             i. Overview and Introduction
+                   1. App Name
+                   2. Purpose
+                   3. Technology Stack (Frameworks, SDKs,
+                      modules/packages utilized) along with their
+                      versions
+            ii. Functional Requirements
+                   1. Core features with Descriptions
+                   2. Specify libraries/packages.
+           iii. Future Enhancements and Roadmap
+                   1. Known Limitations
+                   West Visayas State University
+               COLLEGE OF INFORMATION AND COMMUNICATIONS TECHNOLOGY
+                                     Luna St., La Paz, Iloilo City 5000
+                                            Iloilo, Philippines
+               * Trunkline: (063) (033) 320-0870 loc 1403 * Telefax No.: (033) 320-0879
+                    * Website: www.wvsu.edu.ph       * Email Address: cict@wvsu.edu.ph
+
+
+                     2. Planned Features and Improvements
+
+3. GitHub submission of the project source code and folders.
+      a. A GitHub repository is going to be created within our
+         organization.
+      b. The team leaders will fork the repository, collaborate with their
+         team members.
+      c. Once the project is done, the team leaders will create a PR to
+         merge their changes to the main repository.
+
+4. Self and Peer assessment
+      a. A Self and Peer Assessment template will be distributed to
+          everyone a day after your project presentation.
+      b. This will factor in the final project score, as stated in the
+          Syllabus:
+
+   Project Score Calculation: (PROJECT SCORE RAW * 50%) + (SELF EVAL
+   SCORE RAW * 25%) + (PEER EVAL SCORE RAW * 25%)
+

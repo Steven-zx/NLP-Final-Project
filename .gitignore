@@ -1,0 +1,27 @@
+# Local Python environments
+.venv/
+venv/
+env/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Logs and local runtime files
+*.log
+api_predictions.log
+
+# Hugging Face / transformer training artifacts over GitHub's 100 MB limit
+transformer_model/model.safetensors
+transformer_model/checkpoint-*/model.safetensors
+transformer_model/checkpoint-*/optimizer.pt
+transformer_model/checkpoint-*/
+outputs/transformer_checkpoints/
+
+# Optional local fine-tuned transformer artifacts; regenerate with train_disaster_transformer.py
+models/disaster_transformer/
+
+# OS files
+.DS_Store
+Thumbs.db

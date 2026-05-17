@@ -1,0 +1,75 @@
+================================================================================
+HYPERPARAMETER TUNING SUMMARY REPORT
+================================================================================
+
+Date: 2025-12-12 01:49:12
+Device: cpu
+Total Configurations Tested: 3
+
+CONFIGURATIONS TESTED:
+--------------------------------------------------------------------------------
+
+1. Config 1: Baseline (10 epochs)
+   Learning Rate: 0.001
+   Batch Size: 64
+   Hidden Units: 128
+   Dropout: 0.3
+   Epochs: 10
+   Optimizer: Adam
+   
+   Results:
+   - Best Validation Accuracy: 0.7042 (70.42%)
+   - F1-Score: 0.6426
+   - Precision: 0.6863
+   - Recall: 0.6042
+   - Training Time: 4.46 minutes
+   - Model File: model_config1_baseline.pt
+
+2. Config 2: Extended Training (15 epochs)
+   Learning Rate: 0.0005
+   Batch Size: 32
+   Hidden Units: 256
+   Dropout: 0.4
+   Epochs: 15
+   Optimizer: Adam
+   
+   Results:
+   - Best Validation Accuracy: 0.6949 (69.49%)
+   - F1-Score: 0.6479
+   - Precision: 0.6656
+   - Recall: 0.6311
+   - Training Time: 17.93 minutes
+   - Model File: model_config2_extended.pt
+
+3. Config 3: Fast Training (20 epochs, smaller model)
+   Learning Rate: 0.01
+   Batch Size: 128
+   Hidden Units: 64
+   Dropout: 0.2
+   Epochs: 20
+   Optimizer: RMSprop
+   
+   Results:
+   - Best Validation Accuracy: 0.7039 (70.39%)
+   - F1-Score: 0.6757
+   - Precision: 0.6572
+   - Recall: 0.6953
+   - Training Time: 4.22 minutes
+   - Model File: model_config3_fast.pt
+
+================================================================================
+BEST CONFIGURATION
+================================================================================
+
+Configuration: Config 1: Baseline (10 epochs)
+Validation Accuracy: 0.7042 (70.42%)
+F1-Score: 0.6426
+Model File: model_config1_baseline.pt
+
+================================================================================
+RECOMMENDATIONS
+================================================================================
+
+- All configurations performed similarly (accuracy difference < 2%).
+- Consider using the fastest training configuration for efficiency.
+

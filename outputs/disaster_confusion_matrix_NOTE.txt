@@ -1,0 +1,2 @@
+Confusion matrix image was not generated because matplotlib is unavailable or failed: No module named 'matplotlib'
+The numeric confusion matrix is included in disaster_baseline_evaluation.txt.

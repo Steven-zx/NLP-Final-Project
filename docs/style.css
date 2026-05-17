@@ -1,0 +1,20 @@
+/* Simple clean styling for Pandoc -> wkhtmltopdf */
+@page { margin: 24mm 18mm; }
+body { font-family: "Segoe UI", Arial, sans-serif; color: #222; line-height: 1.5; font-size: 11.5pt; }
+h1, h2, h3 { font-family: "Segoe UI Semibold", "Segoe UI", Arial, sans-serif; color: #0b5394; }
+h1 { font-size: 22pt; margin-top: 0; border-bottom: 2px solid #0b5394; padding-bottom: 6px; }
+h2 { font-size: 16pt; margin-top: 20px; border-left: 4px solid #0b5394; padding-left: 8px; }
+h3 { font-size: 13pt; margin-top: 16px; }
+code, pre { font-family: "Cascadia Code", Consolas, monospace; font-size: 10pt; }
+pre { background: #f6f8fa; border: 1px solid #e1e4e8; padding: 10px; border-radius: 6px; }
+blockquote { border-left: 4px solid #e1e4e8; padding-left: 12px; color: #555; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+th, td { border: 1px solid #ddd; padding: 6px 8px; }
+th { background: #f2f4f7; }
+ul, ol { margin: 0 0 10px 22px; }
+hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+.title-page { text-align: center; margin-top: 80px; }
+.title-page h1 { font-size: 28pt; border: none; }
+.title-meta { color: #666; margin-top: 8px; }
+.toc-title { font-weight: bold; margin: 18px 0 6px 0; }
+.footer { position: fixed; bottom: 5mm; right: 10mm; color: #8a8a8a; font-size: 9pt; }

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RescueText PH</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --ink: #172026;
+            --muted: #5d6872;
+            --line: #d9e1e8;
+            --surface: #ffffff;
+            --soft: #f4f7f9;
+            --primary: #087f8c;
+            --primary-dark: #05626c;
+            --critical: #b42318;
+            --high: #c2410c;
+            --moderate: #9a6700;
+            --low: #16703c;
+            --shadow: 0 16px 40px rgba(20, 38, 48, 0.12);
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--ink);
+            background:
+                linear-gradient(rgba(10, 31, 38, 0.74), rgba(10, 31, 38, 0.66)),
+                url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80");
+            background-size: cover;
+            background-position: center;
+            padding: 24px;
+        }
+
+        .page {
+            width: min(1120px, 100%);
+            margin: 0 auto;
+        }
+
+        header {
+            color: white;
+            margin: 24px 0 20px;
+        }
+
+        header h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        header p {
+            max-width: 760px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .api-status {
+            display: inline-flex;
+            margin-top: 16px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            background: rgba(255, 255, 255, 0.14);
+            color: white;
+        }
+
+        .api-status.ready {
+            background: rgba(22, 112, 60, 0.88);
+        }
+
+        .api-status.offline {
+            background: rgba(180, 35, 24, 0.88);
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .panel {
+            background: var(--surface);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 22px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        textarea,
+        select {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            font: inherit;
+            color: var(--ink);
+            background: white;
+        }
+
+        textarea {
+            min-height: 190px;
+            padding: 14px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        select {
+            padding: 11px 12px;
+        }
+
+        textarea:focus,
+        select:focus {
+            outline: 3px solid rgba(8, 127, 140, 0.18);
+            border-color: var(--primary);
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            margin: 16px 0;
+        }
+
+        .counter {
+            color: var(--muted);
+            text-align: right;
+            font-size: 0.84rem;
+            margin-top: 6px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 8px;
+            padding: 12px 14px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.58;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            flex: 1;
+            color: white;
+            background: var(--primary);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            color: var(--ink);
+            background: var(--soft);
+            border: 1px solid var(--line);
+        }
+
+        .examples h2,
+        .result-side h2 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .example-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .example-btn {
+            text-align: left;
+            line-height: 1.35;
+            background: var(--soft);
+            border: 1px solid var(--line);
+            color: var(--ink);
+            font-weight: 500;
+        }
+
+        .example-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .loading {
+            display: none;
+            margin-top: 14px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .error-message {
+            display: none;
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #f0a6a0;
+            background: #fff0ee;
+            color: var(--critical);
+            font-weight: 700;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .result-container {
+            display: none;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+            overflow: hidden;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .result-main {
+            padding: 18px;
+            color: white;
+            background: var(--low);
+        }
+
+        .urgency-critical .result-main {
+            background: var(--critical);
+        }
+
+        .urgency-high .result-main {
+            background: var(--high);
+        }
+
+        .urgency-moderate .result-main {
+            background: var(--moderate);
+        }
+
+        .result-main span {
+            display: block;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            opacity: 0.88;
+            margin-bottom: 6px;
+        }
+
+        .result-main strong {
+            display: block;
+            font-size: 1.65rem;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .result-body {
+            padding: 18px;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .metric {
+            background: var(--soft);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .metric span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.78rem;
+            margin-bottom: 4px;
+        }
+
+        .metric strong {
+            font-size: 1rem;
+        }
+
+        .top-list {
+            list-style: none;
+            display: grid;
+            gap: 8px;
+            margin: 8px 0 18px;
+        }
+
+        .top-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            background: var(--soft);
+            border-radius: 8px;
+            padding: 9px 10px;
+        }
+
+        .preprocess {
+            display: grid;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 0.92rem;
+            line-height: 1.45;
+        }
+
+        .preprocess strong {
+            color: var(--ink);
+        }
+
+        footer {
+            margin: 18px 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.88rem;
+        }
+
+        @media (max-width: 860px) {
+            body {
+                padding: 14px;
+            }
+
+            main {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <h1>RescueText PH</h1>
+            <p>Filipino-English disaster relief post classification for humanitarian category detection and urgency triage.</p>
+            <div id="apiStatus" class="api-status">Checking API...</div>
+        </header>
+
+        <main>
+            <section class="panel">
+                <label for="textInput">Disaster or social media post</label>
+                <textarea id="textInput" maxlength="5000" placeholder="Example: Need rescue sa Brgy. San Isidro, baha na hanggang bubong. May bata at senior na stranded."></textarea>
+                <div class="counter"><span id="charCount">0</span>/5000</div>
+
+                <div class="field-row">
+                    <div>
+                        <label for="modelSelect">Model</label>
+                        <select id="modelSelect">
+                            <option value="transformer">Transformer</option>
+                            <option value="baseline">Baseline TF-IDF</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="errorMessage" class="error-message"></div>
+                <div id="loading" class="loading">Analyzing post...</div>
+
+                <div class="actions">
+                    <button id="analyzeBtn" class="btn-primary" type="button">Analyze Post</button>
+                    <button id="clearBtn" class="btn-secondary" type="button">Clear</button>
+                </div>
+            </section>
+
+            <aside class="result-side">
+                <section class="panel examples">
+                    <h2>Demo Examples</h2>
+                    <div id="examples" class="example-list"></div>
+                </section>
+
+                <section id="resultContainer" class="result-container" style="margin-top: 18px;">
+                    <div class="result-main">
+                        <span>Predicted Category</span>
+                        <strong id="categoryText"></strong>
+                        <span>Urgency: <b id="urgencyText"></b></span>
+                    </div>
+                    <div class="result-body">
+                        <div class="metric-grid">
+                            <div class="metric">
+                                <span>Confidence</span>
+                                <strong id="confidenceScore"></strong>
+                            </div>
+                            <div class="metric">
+                                <span>Model</span>
+                                <strong id="modelUsed"></strong>
+                            </div>
+                            <div class="metric">
+                                <span>Inference Time</span>
+                                <strong id="inferenceTime"></strong>
+                            </div>
+                        </div>
+
+                        <h2>Top Predictions</h2>
+                        <ul id="topPredictions" class="top-list"></ul>
+
+                        <h2>Preprocessing Preview</h2>
+                        <div class="preprocess">
+                            <p><strong>Cleaned text:</strong> <span id="cleanedText"></span></p>
+                            <p><strong>Final tokens:</strong> <span id="tokensText"></span></p>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+        </main>
+
+        <footer>
+            NLP Final Project. Backend: Flask. Models: TF-IDF baseline and locally fine-tuned transformer.
+        </footer>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

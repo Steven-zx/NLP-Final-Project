@@ -1,0 +1,66 @@
+{
+  "files": {
+    "master": "dataset\\processed\\disaster_posts_master.csv.gz",
+    "humanitarian_categories": "dataset\\processed\\disaster_humanitarian_categories.csv",
+    "informativeness": "dataset\\processed\\disaster_informativeness.csv",
+    "typhoon_yolanda_sentiment": "dataset\\processed\\typhoon_yolanda_sentiment.csv"
+  },
+  "row_counts": {
+    "master": 393514,
+    "humanitarian_categories": 220495,
+    "informativeness": 172284,
+    "typhoon_yolanda_sentiment": 735
+  },
+  "source_counts": {
+    "CrisisBench-all-lang/informativeness": 157682,
+    "CrisisBench-all-lang/humanitarian": 133398,
+    "HumAID-events": 76478,
+    "CrisisLexT26": 25221,
+    "SEACrowd/typhoon_yolanda_tweets": 735
+  },
+  "humanitarian_label_mapping": {
+    "affected_individuals": 0,
+    "caution_and_advice": 1,
+    "disease_related": 2,
+    "displaced_people_and_evacuations": 3,
+    "infrastructure_and_utility_damage": 4,
+    "injured_or_dead_people": 5,
+    "missing_or_found_people": 6,
+    "not_humanitarian": 7,
+    "other_relevant_information": 8,
+    "personal_update": 9,
+    "physical_landslide": 10,
+    "requests_or_needs": 11,
+    "rescue_volunteering_or_donation_effort": 12,
+    "response_efforts": 13,
+    "sympathy_and_support": 14,
+    "terrorism_related": 15
+  },
+  "informativeness_label_mapping": {
+    "informative": 0,
+    "not_informative": 1
+  },
+  "sentiment_label_mapping": {
+    "negative": 0,
+    "neutral": 1,
+    "positive": 2
+  },
+  "urgency_mapping": {
+    "requests_or_needs": "critical",
+    "injured_or_dead_people": "critical",
+    "missing_or_found_people": "critical",
+    "affected_individuals": "high",
+    "displaced_people_and_evacuations": "high",
+    "infrastructure_and_utility_damage": "high",
+    "caution_and_advice": "moderate",
+    "response_efforts": "moderate",
+    "rescue_volunteering_or_donation_effort": "moderate",
+    "disease_related": "moderate",
+    "physical_landslide": "moderate",
+    "terrorism_related": "moderate",
+    "other_relevant_information": "low",
+    "sympathy_and_support": "low",
+    "personal_update": "low",
+    "not_humanitarian": "low"
+  }
+}

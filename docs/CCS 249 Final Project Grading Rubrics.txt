@@ -1,0 +1,127 @@
+                          West Visayas State University
+                                            (Formely Iloilo National School)
+                     COLLEGE OF INFORMATION AND COMMUNICATIONS TECHNOLOGY
+                                           Luna St., La Paz, Iloilo City 5000
+                                                  Iloilo, Philippines
+                     * Trunkline: (063) (033) 320-0870 loc 1403 * Telefax No.: (033) 320-0879
+                          * Website: www.wvsu.edu.ph        * Email Address: cict@wvsu.edu.ph
+
+
+
+
+                 CCS 249 Final Project Grading Rubrics
+Class and Section: _________________________                            Date: __________________
+
+Group Members: __________________________
+
+     Trait          Exceptional            Acceptable            Amateur         Unsatisfactory   Score
+                 18-20 points           14-17 points:        10-13 points:       0-9 points:
+
+                 - Clearly defines      - Defines the        - Problem           - No clear
+                 the problem,           problem well         statement is        problem
+                 objectives, and        but lacks            vague or            definition.
+                 target users.          depth in             incomplete.
+ Project Scope                          justification.                           - No
+  & Purpose      - Justifies why                             - Unclear           connection to
+     (20%)       NLP is the             - Addresses          why NLP is          NLP concepts.
+                 appropriate            user needs but       used.
+                 approach.              lacks specific
+                                        real-world
+                 - Provides real-       impact.
+                 world relevance
+                 or application.
+                 18-20 points:          14-17 points:        10-13 points:       0-9 points:
+
+                 - Uses a relevant      - Uses a             - Uses an           - No
+                 dataset (real-         reasonable           inappropriat        preprocessing
+                 world or               dataset but          e or small          or poorly
+                 simulated).            lacks                dataset.            handled data.
+                                        justification.
+                 - Effectively                               - Missing key       - Dataset is
+     Data        performs               - Performs           preprocessin        irrelevant or
+Collection and   cleaning,              most                 g steps.            incorrectly
+Preprocessing    tokenization,          preprocessing                            labeled.
+    (20%)        stopword               steps but may
+                 removal,               miss some
+                 stemming,              optimizations.
+                 lemmatization,
+                 etc.
+
+                 - Handles missing
+                 or noisy data
+                 appropriately.
+                 23-25 points:          19-22 points:        14-18 points:       0-13 points:
+
+                 - Selects an           - Uses a good        - Uses a            - Incorrect or
+                 appropriate            model but            model but           ineffective
+                 model, which           lacks                without clear       model choice.
+                 were discussed.        justification.       justification.
+     Model
+                                                                                 -
+ Selection and
+                 - Explains model       - Basic              -                   Implementatio
+ Implementati
+                 choice based on        hyperparamet         Implementat         n is
+       on
+                 data                   er tuning            ion has             incomplete or
+     (25%)
+                 characteristics.       attempted.           inefficiencies      does not work.
+                                                             or errors.
+                 - Implements
+                 efficiently with
+                 optimized hyper
+                 parameters.
+                 18-20 points:          14-17 points:        10-13 points: 0-9 points:
+
+                 - Uses                 - Uses relevant      - Uses some         - Does not
+                         West Visayas State University
+                                           (Formely Iloilo National School)
+                    COLLEGE OF INFORMATION AND COMMUNICATIONS TECHNOLOGY
+                                          Luna St., La Paz, Iloilo City 5000
+                                                 Iloilo, Philippines
+                    * Trunkline: (063) (033) 320-0870 loc 1403 * Telefax No.: (033) 320-0879
+                         * Website: www.wvsu.edu.ph        * Email Address: cict@wvsu.edu.ph
+
+
+
+                appropriate            metrics but          evaluation          evaluate the
+Evaluation &    metrics (accuracy,     lacks detailed       metrics but         system
+Performance     precision, recall,     explanation.         misses key          properly.
+  Metrics       F1-score, BLEU,                             aspects.
+   (20%)        perplexity, etc.).     - Basic                                  - No
+                                       comparison to        - No                meaningful
+                - Compares             baseline             comparison          discussion of
+                results with           models.              to baseline         results.
+                baseline models.                            models.
+
+                - Provides
+                insightful analysis
+                of errors and
+                limitations.
+                13-15 points           10-12 points         7-8 points          0-6 Points
+
+                - Demonstrates         - The team           - The team          - The team
+                deep                   presented            presented a         failed to
+                understanding of       their                minimal             present their
+                NLP concepts.          documentatio         documentati         developed
+                                       n on the             on on the           system.
+                - The team             scheduled            scheduled
+                presented their        date.                date.               - The team
+Documentatio
+                documentation                                                   failed to
+    n and
+                on the scheduled       - Presentation       - The team          submit the
+ Presentation
+                date.                  covers the           presented a         project on
+    (15%)
+                                       project but          demonstrati         time.
+                - The team             misses               on of the
+                presented a            technical            developed
+                demonstration of       depth.               systems with
+                the fully                                   errors.
+                functioning            -
+                systems                Documentatio
+                application with       n exists but
+                little to no errors.   lacks details.
+                                                                                    Total / 100
+
