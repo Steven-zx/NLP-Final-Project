@@ -8,7 +8,9 @@ classification head. It does not call any third-party prediction API.
 from __future__ import annotations
 
 import argparse
+import inspect
 import json
+import time
 from pathlib import Path
 
 import numpy as np
@@ -32,6 +34,10 @@ from preprocessing import TextPreprocessor
 
 
 RANDOM_SEED = 42
+
+
+def log_step(message: str) -> None:
+    print(f"\n[{time.strftime('%H:%M:%S')}] {message}", flush=True)
 
 
 class DisasterTextDataset(Dataset):
@@ -82,9 +88,15 @@ def split_dataset(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.Data
     return train.reset_index(drop=True), val.reset_index(drop=True), test.reset_index(drop=True)
 
 
-def preprocess(texts: list[str]) -> list[str]:
+def preprocess(texts: list[str], name: str) -> list[str]:
+    log_step(f"Preprocessing {name} split ({len(texts):,} texts)")
     processor = TextPreprocessor(remove_stopwords=True, lemmatize=True, stem=True)
-    return [processor.get_tokens_as_string(text) for text in texts]
+    processed = []
+    for index, text in enumerate(texts, start=1):
+        processed.append(processor.get_tokens_as_string(text))
+        if index % 1000 == 0 or index == len(texts):
+            print(f"  {name}: {index:,}/{len(texts):,} texts preprocessed", flush=True)
+    return processed
 
 
 def compute_metrics(eval_pred) -> dict:
@@ -98,7 +110,33 @@ def compute_metrics(eval_pred) -> dict:
     }
 
 
+def make_training_args(args: argparse.Namespace) -> TrainingArguments:
+    """Create TrainingArguments across Transformers versions."""
+    kwargs = {
+        "output_dir": str(Path(args.output_dir) / "transformer_checkpoints"),
+        "num_train_epochs": args.epochs,
+        "per_device_train_batch_size": args.batch_size,
+        "per_device_eval_batch_size": args.batch_size,
+        "learning_rate": 2e-5,
+        "weight_decay": 0.01,
+        "save_strategy": "no",
+        "load_best_model_at_end": False,
+        "logging_steps": 100,
+        "report_to": [],
+        "seed": RANDOM_SEED,
+    }
+
+    params = inspect.signature(TrainingArguments.__init__).parameters
+    if "evaluation_strategy" in params:
+        kwargs["evaluation_strategy"] = "epoch"
+    else:
+        kwargs["eval_strategy"] = "epoch"
+
+    return TrainingArguments(**kwargs)
+
+
 def write_report(trainer: Trainer, test_dataset: DisasterTextDataset, test_df: pd.DataFrame, output_dir: Path) -> None:
+    log_step("Evaluating transformer on the held-out test split")
     output_dir.mkdir(parents=True, exist_ok=True)
     predictions = trainer.predict(test_dataset)
     logits = predictions.predictions
@@ -146,6 +184,7 @@ def write_report(trainer: Trainer, test_dataset: DisasterTextDataset, test_df: p
     pred_df["predicted_label_id"] = y_pred
     pred_df["confidence"] = probs.max(axis=1)
     pred_df.to_csv(output_dir / "disaster_transformer_predictions.csv", index=False)
+    log_step(f"Saved transformer evaluation files to {output_dir}")
 
 
 def main() -> None:
@@ -160,9 +199,19 @@ def main() -> None:
     parser.add_argument("--max-length", type=int, default=128)
     args = parser.parse_args()
 
+    log_step(f"Loading dataset: {args.dataset}")
     df = load_dataset(args.dataset, sample_size=args.sample_size or None)
-    train_df, val_df, test_df = split_dataset(df)
+    print(f"Loaded {len(df):,} rows after sampling and cleanup", flush=True)
+    print(df["final_label"].value_counts().to_string(), flush=True)
 
+    log_step("Splitting dataset into train/validation/test")
+    train_df, val_df, test_df = split_dataset(df)
+    print(
+        f"Train: {len(train_df):,} | Validation: {len(val_df):,} | Test: {len(test_df):,}",
+        flush=True,
+    )
+
+    log_step(f"Loading tokenizer and model: {args.model_name}")
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
     model = AutoModelForSequenceClassification.from_pretrained(
         args.model_name,
@@ -171,25 +220,16 @@ def main() -> None:
         label2id=LABEL_TO_ID,
     )
 
-    train_dataset = DisasterTextDataset(preprocess(train_df["text"].tolist()), train_df["label"].to_numpy(), tokenizer, args.max_length)
-    val_dataset = DisasterTextDataset(preprocess(val_df["text"].tolist()), val_df["label"].to_numpy(), tokenizer, args.max_length)
-    test_dataset = DisasterTextDataset(preprocess(test_df["text"].tolist()), test_df["label"].to_numpy(), tokenizer, args.max_length)
+    train_dataset = DisasterTextDataset(preprocess(train_df["text"].tolist(), "train"), train_df["label"].to_numpy(), tokenizer, args.max_length)
+    val_dataset = DisasterTextDataset(preprocess(val_df["text"].tolist(), "validation"), val_df["label"].to_numpy(), tokenizer, args.max_length)
+    test_dataset = DisasterTextDataset(preprocess(test_df["text"].tolist(), "test"), test_df["label"].to_numpy(), tokenizer, args.max_length)
 
-    training_args = TrainingArguments(
-        output_dir=str(Path(args.output_dir) / "transformer_checkpoints"),
-        num_train_epochs=args.epochs,
-        per_device_train_batch_size=args.batch_size,
-        per_device_eval_batch_size=args.batch_size,
-        learning_rate=2e-5,
-        weight_decay=0.01,
-        evaluation_strategy="epoch",
-        save_strategy="epoch",
-        load_best_model_at_end=True,
-        metric_for_best_model="f1_macro",
-        greater_is_better=True,
-        logging_steps=100,
-        report_to=[],
-        seed=RANDOM_SEED,
+    training_args = make_training_args(args)
+    steps_per_epoch = max(1, int(np.ceil(len(train_dataset) / args.batch_size)))
+    total_steps = int(np.ceil(steps_per_epoch * args.epochs))
+    log_step(
+        f"Starting training: {args.epochs:g} epoch(s), batch size {args.batch_size}, "
+        f"about {steps_per_epoch:,} steps per epoch ({total_steps:,} total steps)"
     )
 
     trainer = Trainer(
@@ -203,6 +243,7 @@ def main() -> None:
 
     model_path = Path(args.model_output)
     model_path.mkdir(parents=True, exist_ok=True)
+    log_step(f"Saving transformer model to {model_path}")
     trainer.save_model(str(model_path))
     tokenizer.save_pretrained(str(model_path))
     (model_path / "disaster_labels.json").write_text(
@@ -220,7 +261,7 @@ def main() -> None:
     )
 
     write_report(trainer, test_dataset, test_df, Path(args.output_dir))
-    print(f"Saved transformer model to {model_path}")
+    log_step(f"Done. Saved transformer model to {model_path}")
 
 
 if __name__ == "__main__":

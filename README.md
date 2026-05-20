@@ -74,6 +74,8 @@ Train the transformer model:
 python train_disaster_transformer.py --sample-size 24000 --epochs 1
 ```
 
+The transformer model can be several hundred MB. It is ignored by `.gitignore` by default so GitHub will not reject the push. Use Git LFS only if the final transformer artifact must be committed.
+
 Baseline artifacts are saved to:
 
 ```text

@@ -10,11 +10,26 @@ const CONFIG = {
 };
 
 const EXAMPLES = [
-    'Need rescue sa Brgy. San Isidro, baha na hanggang bubong. May bata at senior na stranded.',
-    'Two injured residents near the collapsed bridge need medical assistance immediately.',
-    'Evacuation center at City High School is open. Bring water, IDs, and blankets.',
-    'Power lines are down along Mabini Street after the typhoon. Avoid the area.',
-    'Selling raincoats and flashlights at discounted prices today only.'
+    {
+        text: 'Need rescue sa Brgy. San Isidro, baha na hanggang bubong. May bata at senior na stranded.',
+        category: 'Rescue or Urgent Needs'
+    },
+    {
+        text: 'Two injured residents near the collapsed bridge need medical assistance immediately.',
+        category: 'Medical or Casualties'
+    },
+    {
+        text: 'Evacuation center at City High School is open. Bring water, IDs, and blankets.',
+        category: 'Evacuation or Displacement'
+    },
+    {
+        text: 'Power lines are down along Mabini Street after the typhoon. Avoid the area.',
+        category: 'Infrastructure Damage'
+    },
+    {
+        text: 'Selling raincoats and flashlights at discounted prices today only.',
+        category: 'Not Humanitarian'
+    }
 ];
 
 let appState = {
@@ -55,12 +70,15 @@ function setupEventListeners() {
 function setupExamples() {
     const container = document.getElementById('examples');
     container.innerHTML = EXAMPLES.map((example, index) => (
-        `<button type="button" class="example-btn" data-index="${index}">${escapeHtml(example)}</button>`
+        `<button type="button" class="example-btn" data-index="${index}">
+            <span>${escapeHtml(example.category)}</span>
+            <strong>${escapeHtml(example.text)}</strong>
+        </button>`
     )).join('');
 
     container.querySelectorAll('button').forEach((button) => {
         button.addEventListener('click', () => {
-            const text = EXAMPLES[Number(button.dataset.index)];
+            const text = EXAMPLES[Number(button.dataset.index)].text;
             document.getElementById('textInput').value = text;
             updateCharCounter(text.length);
             clearResults();

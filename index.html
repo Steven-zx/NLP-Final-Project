@@ -60,27 +60,9 @@
             line-height: 1.5;
         }
 
-        .api-status {
-            display: inline-flex;
-            margin-top: 16px;
-            padding: 8px 10px;
-            border-radius: 8px;
-            font-size: 0.88rem;
-            background: rgba(255, 255, 255, 0.14);
-            color: white;
-        }
-
-        .api-status.ready {
-            background: rgba(22, 112, 60, 0.88);
-        }
-
-        .api-status.offline {
-            background: rgba(180, 35, 24, 0.88);
-        }
-
         main {
             display: grid;
-            grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+            grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
             gap: 18px;
             align-items: start;
         }
@@ -175,14 +157,21 @@
             border: 1px solid var(--line);
         }
 
+        .result-side {
+            position: sticky;
+            top: 18px;
+        }
+
         .examples h2,
-        .result-side h2 {
+        .result-side h2,
+        .category-guide h2 {
             font-size: 1rem;
             margin-bottom: 10px;
         }
 
         .example-list {
             display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 8px;
         }
 
@@ -193,10 +182,32 @@
             border: 1px solid var(--line);
             color: var(--ink);
             font-weight: 500;
+            min-height: 132px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: flex-start;
         }
 
         .example-btn:hover {
             border-color: var(--primary);
+        }
+
+        .example-btn span {
+            display: inline-flex;
+            width: fit-content;
+            max-width: 100%;
+            padding: 4px 7px;
+            border-radius: 999px;
+            background: rgba(8, 127, 140, 0.12);
+            color: var(--primary-dark);
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .example-btn strong {
+            font-size: 0.88rem;
+            font-weight: 600;
         }
 
         .loading {
@@ -226,15 +237,39 @@
         }
 
         .result-container {
-            display: none;
+            display: block;
             border: 1px solid var(--line);
             border-radius: 8px;
             background: var(--surface);
             overflow: hidden;
+            min-height: 440px;
+            max-height: calc(100vh - 180px);
+            box-shadow: var(--shadow);
         }
 
-        .result-container.active {
+        .result-container:not(.active) .result-filled {
+            display: none;
+        }
+
+        .result-container.active .result-empty {
+            display: none;
+        }
+
+        .result-empty {
+            min-height: 440px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 28px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .result-empty strong {
             display: block;
+            color: var(--ink);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
         }
 
         .result-main {
@@ -273,11 +308,13 @@
 
         .result-body {
             padding: 18px;
+            max-height: calc(100vh - 322px);
+            overflow: auto;
         }
 
         .metric-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             margin-bottom: 16px;
         }
@@ -315,6 +352,14 @@
             padding: 9px 10px;
         }
 
+        .top-list li span {
+            min-width: 0;
+        }
+
+        .top-list li strong {
+            white-space: nowrap;
+        }
+
         .preprocess {
             display: grid;
             gap: 8px;
@@ -327,10 +372,59 @@
             color: var(--ink);
         }
 
-        footer {
-            margin: 18px 0;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.88rem;
+        .lower-sections {
+            display: grid;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .category-card {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--soft);
+            padding: 12px;
+            min-height: 96px;
+        }
+
+        .category-card strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .category-card span {
+            display: inline-flex;
+            padding: 3px 7px;
+            border-radius: 999px;
+            color: white;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: var(--low);
+        }
+
+        .category-card span.critical {
+            background: var(--critical);
+        }
+
+        .category-card span.high {
+            background: var(--high);
+        }
+
+        .category-card span.moderate {
+            background: var(--moderate);
+        }
+
+        .category-card p {
+            color: var(--muted);
+            font-size: 0.86rem;
+            line-height: 1.35;
         }
 
         @media (max-width: 860px) {
@@ -342,8 +436,38 @@
                 grid-template-columns: 1fr;
             }
 
+            .result-side {
+                position: static;
+            }
+
+            .result-container,
+            .result-empty {
+                min-height: 320px;
+                max-height: none;
+            }
+
+            .result-body {
+                max-height: none;
+            }
+
+            .metric-grid,
+            .category-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .example-list {
+                grid-template-columns: 1fr;
+            }
+
             .actions {
                 flex-direction: column;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .metric-grid,
+            .category-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -353,7 +477,7 @@
         <header>
             <h1>RescueText PH</h1>
             <p>Filipino-English disaster relief post classification for humanitarian category detection and urgency triage.</p>
-            <div id="apiStatus" class="api-status">Checking API...</div>
+            <div id="apiStatus" hidden></div>
         </header>
 
         <main>
@@ -382,49 +506,99 @@
             </section>
 
             <aside class="result-side">
-                <section class="panel examples">
-                    <h2>Demo Examples</h2>
-                    <div id="examples" class="example-list"></div>
-                </section>
-
-                <section id="resultContainer" class="result-container" style="margin-top: 18px;">
-                    <div class="result-main">
-                        <span>Predicted Category</span>
-                        <strong id="categoryText"></strong>
-                        <span>Urgency: <b id="urgencyText"></b></span>
+                <section id="resultContainer" class="result-container">
+                    <div class="result-empty">
+                        <strong>Prediction appears here</strong>
+                        <p>Enter a disaster post, choose a model, and run analysis to see the category, urgency, confidence, and preprocessing output.</p>
                     </div>
-                    <div class="result-body">
-                        <div class="metric-grid">
-                            <div class="metric">
-                                <span>Confidence</span>
-                                <strong id="confidenceScore"></strong>
-                            </div>
-                            <div class="metric">
-                                <span>Model</span>
-                                <strong id="modelUsed"></strong>
-                            </div>
-                            <div class="metric">
-                                <span>Inference Time</span>
-                                <strong id="inferenceTime"></strong>
-                            </div>
+                    <div class="result-filled">
+                        <div class="result-main">
+                            <span>Predicted Category</span>
+                            <strong id="categoryText"></strong>
+                            <span>Urgency: <b id="urgencyText"></b></span>
                         </div>
+                        <div class="result-body">
+                            <div class="metric-grid">
+                                <div class="metric">
+                                    <span>Confidence</span>
+                                    <strong id="confidenceScore"></strong>
+                                </div>
+                                <div class="metric">
+                                    <span>Model</span>
+                                    <strong id="modelUsed"></strong>
+                                </div>
+                                <div class="metric">
+                                    <span>Time</span>
+                                    <strong id="inferenceTime"></strong>
+                                </div>
+                            </div>
 
-                        <h2>Top Predictions</h2>
-                        <ul id="topPredictions" class="top-list"></ul>
+                            <h2>Top Predictions</h2>
+                            <ul id="topPredictions" class="top-list"></ul>
 
-                        <h2>Preprocessing Preview</h2>
-                        <div class="preprocess">
-                            <p><strong>Cleaned text:</strong> <span id="cleanedText"></span></p>
-                            <p><strong>Final tokens:</strong> <span id="tokensText"></span></p>
+                            <h2>Preprocessing Preview</h2>
+                            <div class="preprocess">
+                                <p><strong>Cleaned text:</strong> <span id="cleanedText"></span></p>
+                                <p><strong>Final tokens:</strong> <span id="tokensText"></span></p>
+                            </div>
                         </div>
                     </div>
                 </section>
             </aside>
         </main>
 
-        <footer>
-            NLP Final Project. Backend: Flask. Models: TF-IDF baseline and locally fine-tuned transformer.
-        </footer>
+        <div class="lower-sections">
+            <section class="panel examples">
+                <h2>Demo Examples</h2>
+                <div id="examples" class="example-list"></div>
+            </section>
+
+            <section class="panel category-guide">
+                <h2>Prediction Categories</h2>
+                <div class="category-grid">
+                    <div class="category-card">
+                        <span class="critical">Critical</span>
+                        <strong>Rescue or Urgent Needs</strong>
+                        <p>Posts asking for rescue, urgent help, or stranded-person response.</p>
+                    </div>
+                    <div class="category-card">
+                        <span class="critical">Critical</span>
+                        <strong>Medical or Casualties</strong>
+                        <p>Injuries, deaths, missing people, medical support, or health concerns.</p>
+                    </div>
+                    <div class="category-card">
+                        <span class="high">High</span>
+                        <strong>Evacuation or Displacement</strong>
+                        <p>Evacuation centers, displaced residents, shelters, and relocation needs.</p>
+                    </div>
+                    <div class="category-card">
+                        <span class="high">High</span>
+                        <strong>Infrastructure Damage</strong>
+                        <p>Damaged roads, bridges, power lines, buildings, landslides, or utilities.</p>
+                    </div>
+                    <div class="category-card">
+                        <span class="moderate">Moderate</span>
+                        <strong>Warnings or Advice</strong>
+                        <p>Alerts, advisories, caution messages, and safety instructions.</p>
+                    </div>
+                    <div class="category-card">
+                        <span class="moderate">Moderate</span>
+                        <strong>Donation or Volunteering</strong>
+                        <p>Relief goods, donations, volunteer calls, supplies, food, or water offers.</p>
+                    </div>
+                    <div class="category-card">
+                        <span>Low</span>
+                        <strong>General Update</strong>
+                        <p>Relevant disaster updates, reactions, support, or non-urgent information.</p>
+                    </div>
+                    <div class="category-card">
+                        <span>Low</span>
+                        <strong>Not Humanitarian</strong>
+                        <p>Posts that are unrelated, promotional, commercial, or not useful for triage.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 
     <script src="main.js"></script>
