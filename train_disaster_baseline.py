@@ -8,6 +8,7 @@ Dataset: dataset/processed/disaster_humanitarian_categories.csv.
 from __future__ import annotations
 
 import argparse
+import inspect
 import json
 from pathlib import Path
 from typing import List
@@ -15,8 +16,9 @@ from typing import List
 import joblib
 import numpy as np
 import pandas as pd
+from sklearn.calibration import CalibratedClassifierCV
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -26,6 +28,7 @@ from sklearn.metrics import (
     recall_score,
 )
 from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import ComplementNB
 from sklearn.pipeline import FeatureUnion, Pipeline
 from sklearn.svm import LinearSVC
 
@@ -45,14 +48,17 @@ RANDOM_SEED = 42
 
 
 def load_disaster_dataset(path: str, sample_size: int | None = None) -> pd.DataFrame:
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, low_memory=False)
     required = {"text", "category"}
     missing = required.difference(df.columns)
     if missing:
         raise ValueError(f"Missing required columns: {sorted(missing)}")
 
     df = df.dropna(subset=["text", "category"]).copy()
-    df["final_label"] = df["category"].map(simplify_category)
+    if "final_label" in df.columns:
+        df["final_label"] = df["final_label"].fillna(df["category"].map(simplify_category))
+    else:
+        df["final_label"] = df["category"].map(simplify_category)
     df = df[df["final_label"].isin(FINAL_LABELS)]
     df["label"] = df["final_label"].map(LABEL_TO_ID).astype(int)
     df = df[df["text"].str.strip() != ""].drop_duplicates(subset=["text", "final_label"])
@@ -65,7 +71,7 @@ def load_disaster_dataset(path: str, sample_size: int | None = None) -> pd.DataF
         df = pd.concat(sampled, ignore_index=True)
         if len(df) < sample_size:
             remainder = (
-                pd.read_csv(path)
+                pd.read_csv(path, low_memory=False)
                 .dropna(subset=["text", "category"])
                 .assign(final_label=lambda item: item["category"].map(simplify_category))
             )
@@ -83,6 +89,14 @@ def load_disaster_dataset(path: str, sample_size: int | None = None) -> pd.DataF
 def preprocess_texts(texts: List[str]) -> List[str]:
     processor = TextPreprocessor(remove_stopwords=True, lemmatize=True, stem=True)
     return [processor.get_tokens_as_string(text) for text in texts]
+
+
+def calibrated_linearsvc(**kwargs) -> CalibratedClassifierCV:
+    estimator = LinearSVC(**kwargs)
+    params = inspect.signature(CalibratedClassifierCV.__init__).parameters
+    if "estimator" in params:
+        return CalibratedClassifierCV(estimator=estimator, cv=3)
+    return CalibratedClassifierCV(base_estimator=estimator, cv=3)
 
 
 def split_dataset(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -183,6 +197,79 @@ def model_candidates() -> list[tuple[str, Pipeline]]:
             ),
         ),
         (
+            "tfidf_word_bigram_complementnb",
+            Pipeline(
+                [
+                    (
+                        "tfidf",
+                        TfidfVectorizer(
+                            max_features=70000,
+                            ngram_range=(1, 2),
+                            min_df=2,
+                            max_df=0.9,
+                            sublinear_tf=True,
+                        ),
+                    ),
+                    ("classifier", ComplementNB(alpha=0.2)),
+                ]
+            ),
+        ),
+        (
+            "tfidf_word_bigram_sgd_log",
+            Pipeline(
+                [
+                    (
+                        "tfidf",
+                        TfidfVectorizer(
+                            max_features=80000,
+                            ngram_range=(1, 2),
+                            min_df=2,
+                            max_df=0.92,
+                            sublinear_tf=True,
+                        ),
+                    ),
+                    (
+                        "classifier",
+                        SGDClassifier(
+                            loss="log_loss",
+                            alpha=1e-5,
+                            penalty="elasticnet",
+                            l1_ratio=0.15,
+                            class_weight="balanced",
+                            max_iter=1500,
+                            random_state=RANDOM_SEED,
+                        ),
+                    ),
+                ]
+            ),
+        ),
+        (
+            "tfidf_word_bigram_calibrated_linearsvc",
+            Pipeline(
+                [
+                    (
+                        "tfidf",
+                        TfidfVectorizer(
+                            max_features=60000,
+                            ngram_range=(1, 2),
+                            min_df=2,
+                            max_df=0.92,
+                            sublinear_tf=True,
+                        ),
+                    ),
+                    (
+                        "classifier",
+                        calibrated_linearsvc(
+                            C=0.75,
+                            class_weight="balanced",
+                            dual="auto",
+                            random_state=RANDOM_SEED,
+                        ),
+                    ),
+                ]
+            ),
+        ),
+        (
             "tfidf_word_char_linearsvc",
             Pipeline(
                 [
@@ -250,11 +337,13 @@ def probability_like(model: Pipeline, texts: List[str]) -> np.ndarray:
 def evaluate(model: Pipeline, texts: List[str], labels: np.ndarray) -> dict:
     predictions = model.predict(texts)
     probabilities = probability_like(model, texts)
+    matrix = confusion_matrix(labels, predictions, labels=list(range(len(FINAL_LABELS))))
     return {
         "accuracy": accuracy_score(labels, predictions),
         "precision_macro": precision_score(labels, predictions, average="macro", zero_division=0),
         "recall_macro": recall_score(labels, predictions, average="macro", zero_division=0),
         "f1_macro": f1_score(labels, predictions, average="macro", zero_division=0),
+        "f1_weighted": f1_score(labels, predictions, average="weighted", zero_division=0),
         "classification_report": classification_report(
             labels,
             predictions,
@@ -262,10 +351,29 @@ def evaluate(model: Pipeline, texts: List[str], labels: np.ndarray) -> dict:
             target_names=[LABEL_DISPLAY_NAMES[label] for label in FINAL_LABELS],
             zero_division=0,
         ),
-        "confusion_matrix": confusion_matrix(labels, predictions, labels=list(range(len(FINAL_LABELS)))).tolist(),
+        "confusion_matrix": matrix.tolist(),
+        "top_confusions": top_confusions(matrix),
         "predictions": predictions,
         "probabilities": probabilities,
     }
+
+
+def top_confusions(matrix: np.ndarray, limit: int = 3) -> list[dict]:
+    confusions = []
+    for true_idx in range(matrix.shape[0]):
+        for pred_idx in range(matrix.shape[1]):
+            if true_idx == pred_idx:
+                continue
+            count = int(matrix[true_idx, pred_idx])
+            if count:
+                confusions.append(
+                    {
+                        "true_label": ID_TO_LABEL[true_idx],
+                        "predicted_label": ID_TO_LABEL[pred_idx],
+                        "count": count,
+                    }
+                )
+    return sorted(confusions, key=lambda item: item["count"], reverse=True)[:limit]
 
 
 def write_outputs(
@@ -307,6 +415,7 @@ def write_outputs(
                 f"Precision macro: {eval_result['precision_macro']:.4f}",
                 f"Recall macro: {eval_result['recall_macro']:.4f}",
                 f"F1 macro: {eval_result['f1_macro']:.4f}",
+                f"F1 weighted: {eval_result['f1_weighted']:.4f}",
                 "",
                 "Validation Model Comparison",
                 pd.DataFrame(validation_results)
@@ -318,6 +427,9 @@ def write_outputs(
                 "",
                 "Confusion Matrix",
                 json.dumps(eval_result["confusion_matrix"], indent=2),
+                "",
+                "Top Confusion Pairs",
+                json.dumps(eval_result["top_confusions"], indent=2),
             ]
         ),
         encoding="utf-8",
@@ -361,6 +473,7 @@ def write_outputs(
                 "id_to_label": ID_TO_LABEL,
                 "display_names": LABEL_DISPLAY_NAMES,
                 "urgency_by_label": URGENCY_BY_FINAL_LABEL,
+                "top_confusions": eval_result["top_confusions"],
             },
             indent=2,
         ),
@@ -405,6 +518,7 @@ def main() -> None:
             "precision_macro": val_result["precision_macro"],
             "recall_macro": val_result["recall_macro"],
             "f1_macro": val_result["f1_macro"],
+            "f1_weighted": val_result["f1_weighted"],
         }
         validation_results.append(row)
         print(

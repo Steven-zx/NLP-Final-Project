@@ -1,115 +1,138 @@
 RescueText PH Baseline Evaluation
 ========================================
-Selected model: tfidf_word_char_linearsvc
-Accuracy: 0.7360
-Precision macro: 0.7429
-Recall macro: 0.7507
-F1 macro: 0.7459
+Selected model: tfidf_word_bigram_calibrated_linearsvc
+Accuracy: 0.7600
+Precision macro: 0.7654
+Recall macro: 0.7733
+F1 macro: 0.7689
+F1 weighted: 0.7576
 
 Validation Model Comparison
-                  model_name  accuracy  precision_macro  recall_macro  f1_macro
-   tfidf_word_char_linearsvc    0.7282           0.7318        0.7425    0.7360
-    tfidf_word_bigram_logreg    0.7278           0.7301        0.7433    0.7347
-   tfidf_word_trigram_logreg    0.7266           0.7287        0.7422    0.7334
-tfidf_word_trigram_linearsvc    0.7217           0.7249        0.7365    0.7294
+                            model_name  accuracy  precision_macro  recall_macro  f1_macro  f1_weighted
+tfidf_word_bigram_calibrated_linearsvc    0.7580           0.7652        0.7703    0.7673       0.7560
+             tfidf_word_bigram_sgd_log    0.7584           0.7570        0.7783    0.7656       0.7548
+              tfidf_word_bigram_logreg    0.7562           0.7543        0.7773    0.7635       0.7527
+             tfidf_word_trigram_logreg    0.7553           0.7529        0.7768    0.7624       0.7518
+             tfidf_word_char_linearsvc    0.7531           0.7537        0.7697    0.7606       0.7499
+          tfidf_word_trigram_linearsvc    0.7506           0.7507        0.7697    0.7587       0.7469
+        tfidf_word_bigram_complementnb    0.6878           0.6884        0.7059    0.6906       0.6787
 
 Classification Report
                             precision    recall  f1-score   support
 
-    Rescue or Urgent Needs       0.78      0.76      0.77      1502
-     Medical or Casualties       0.83      0.85      0.84      1535
-Evacuation or Displacement       0.83      0.87      0.85       677
-     Infrastructure Damage       0.74      0.78      0.76      1522
-        Warnings or Advice       0.69      0.67      0.68      1502
-  Donation or Volunteering       0.73      0.80      0.76      1606
-            General Update       0.61      0.51      0.56      1867
-          Not Humanitarian       0.73      0.76      0.74      1789
+    Rescue or Urgent Needs       0.75      0.76      0.76      1576
+     Medical or Casualties       0.88      0.91      0.89      1438
+Evacuation or Displacement       0.81      0.84      0.83       577
+     Infrastructure Damage       0.78      0.77      0.77      1521
+        Warnings or Advice       0.70      0.68      0.69      1000
+  Donation or Volunteering       0.81      0.87      0.84      1538
+            General Update       0.64      0.57      0.60      2188
+          Not Humanitarian       0.75      0.78      0.76      2162
 
-                  accuracy                           0.74     12000
-                 macro avg       0.74      0.75      0.75     12000
-              weighted avg       0.73      0.74      0.73     12000
+                  accuracy                           0.76     12000
+                 macro avg       0.77      0.77      0.77     12000
+              weighted avg       0.76      0.76      0.76     12000
 
 
 Confusion Matrix
 [
   [
-    1142,
-    22,
+    1205,
+    36,
+    26,
+    29,
+    29,
+    112,
+    74,
+    65
+  ],
+  [
     18,
-    34,
-    28,
-    142,
-    54,
-    62
-  ],
-  [
-    12,
-    1308,
-    16,
-    46,
-    17,
-    27,
-    84,
-    25
-  ],
-  [
+    1311,
+    3,
+    24,
+    9,
     10,
-    12,
-    591,
-    11,
-    18,
+    41,
+    22
+  ],
+  [
+    23,
+    6,
+    486,
+    8,
     15,
-    13,
+    8,
+    24,
     7
   ],
   [
-    33,
-    35,
+    28,
+    29,
+    10,
+    1175,
+    50,
+    18,
+    150,
+    61
+  ],
+  [
+    30,
+    6,
+    29,
+    57,
+    678,
+    16,
+    135,
+    49
+  ],
+  [
+    121,
+    6,
+    12,
     9,
-    1185,
-    76,
-    34,
-    105,
-    45
+    10,
+    1341,
+    26,
+    13
   ],
   [
-    46,
-    31,
-    31,
-    91,
-    1006,
-    62,
-    131,
-    104
+    111,
+    59,
+    27,
+    153,
+    150,
+    111,
+    1246,
+    331
   ],
   [
-    119,
-    22,
-    20,
-    23,
-    53,
-    1283,
-    56,
-    30
-  ],
-  [
-    62,
-    93,
-    21,
-    142,
-    197,
-    158,
-    957,
-    237
-  ],
-  [
-    47,
-    48,
-    2,
-    67,
-    63,
-    31,
-    171,
-    1360
+    64,
+    42,
+    6,
+    61,
+    28,
+    33,
+    250,
+    1678
   ]
+]
+
+Top Confusion Pairs
+[
+  {
+    "true_label": "general_update",
+    "predicted_label": "not_humanitarian",
+    "count": 331
+  },
+  {
+    "true_label": "not_humanitarian",
+    "predicted_label": "general_update",
+    "count": 250
+  },
+  {
+    "true_label": "general_update",
+    "predicted_label": "infrastructure_damage",
+    "count": 153
+  }
 ]

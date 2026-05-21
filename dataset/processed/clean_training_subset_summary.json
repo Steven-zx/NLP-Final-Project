@@ -1,0 +1,31 @@
+{
+  "input_path": "dataset\\processed\\disaster_humanitarian_categories.csv",
+  "output_path": "dataset\\processed\\clean_training_subset.csv",
+  "before_rows": 220495,
+  "after_required_fields": 220495,
+  "after_quality_filters": 164408,
+  "after_normalized_deduplication": 164075,
+  "removed_by_normalized_deduplication": 333,
+  "min_tokens": 4,
+  "class_distribution": {
+    "general_update": 53559,
+    "not_humanitarian": 52225,
+    "rescue_or_urgent_needs": 14289,
+    "donation_or_volunteering": 12607,
+    "infrastructure_damage": 11295,
+    "medical_or_casualties": 9584,
+    "warnings_or_advice": 6666,
+    "evacuation_or_displacement": 3850
+  },
+  "source_distribution": {
+    "CrisisBench-all-lang/humanitarian": 97929,
+    "HumAID-events": 61203,
+    "CrisisLexT26": 4943
+  },
+  "label_mapping_notes": {
+    "affected_individuals": "Remapped by text keywords; broad affected-person updates become general_update.",
+    "response_efforts": "Mapped to donation_or_volunteering when response/aid terms are present; otherwise general_update.",
+    "rescue_volunteering_or_donation_effort": "Split by rescue vs donation keywords; ambiguous rows are dropped.",
+    "terrorism_related": "Dropped because it is too broad for disaster-response triage categories."
+  }
+}

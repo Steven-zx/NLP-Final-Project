@@ -175,9 +175,10 @@ Tuned classical TF-IDF models with class balancing.
 - Word trigram TF-IDF + Logistic Regression
 - Word trigram TF-IDF + LinearSVC
 - Word + character TF-IDF + LinearSVC
+- ComplementNB, SGD, and calibrated LinearSVC variants
 
 **Selected baseline:**  
-Word + character TF-IDF + LinearSVC
+Word bigram TF-IDF + calibrated LinearSVC
 
 **Reason selected:**  
 Highest validation macro F1.
@@ -187,12 +188,20 @@ This is stronger than a single baseline because it shows model development, comp
 
 ## Slide 10: Model Evaluation
 
-**Baseline final test results, balanced 80,000-row sample:**
+**Baseline final test results, clean balanced 80,000-row sample:**
 
-- Accuracy: 0.7360
-- Macro Precision: 0.7429
-- Macro Recall: 0.7507
-- Macro F1-score: 0.7459
+- Accuracy: 0.7600
+- Macro Precision: 0.7654
+- Macro Recall: 0.7733
+- Macro F1-score: 0.7689
+- Weighted F1-score: 0.7576
+
+**Secondary actionability result:**
+
+- Accuracy: 0.8683
+- Macro Precision: 0.8535
+- Macro Recall: 0.8690
+- Macro F1-score: 0.8596
 
 **Transformer final test results, balanced 12,000-row sample, 1 epoch:**
 
@@ -205,7 +214,8 @@ This is stronger than a single baseline because it shows model development, comp
 
 | Model | Accuracy | Macro Precision | Macro Recall | Macro F1 |
 |---|---:|---:|---:|---:|
-| Tuned TF-IDF + LinearSVC | 0.7360 | 0.7429 | 0.7507 | 0.7459 |
+| Improved TF-IDF + calibrated LinearSVC | 0.7600 | 0.7654 | 0.7733 | 0.7689 |
+| Binary actionability model | 0.8683 | 0.8535 | 0.8690 | 0.8596 |
 | Multilingual DistilBERT | 0.6661 | 0.6600 | 0.6661 | 0.6608 |
 
 **Speaker Notes:**  
@@ -262,6 +272,7 @@ This slide is important for high marks because it shows critical analysis instea
 - Prediction result panel
 - Category and urgency display
 - Confidence and top predictions
+- Actionability output
 - Preprocessing preview
 - Demo examples and category guide
 
@@ -307,10 +318,11 @@ RescueText PH helps turn noisy disaster posts into categorized, urgency-aware in
 
 | Baseline Variant | Validation Macro F1 |
 |---|---:|
-| Word + character TF-IDF + LinearSVC | 0.7360 |
-| Word bigram TF-IDF + Logistic Regression | 0.7347 |
-| Word trigram TF-IDF + Logistic Regression | 0.7334 |
-| Word trigram TF-IDF + LinearSVC | 0.7294 |
+| Word bigram TF-IDF + calibrated LinearSVC | 0.7673 |
+| Word bigram TF-IDF + SGD logistic classifier | 0.7656 |
+| Word bigram TF-IDF + Logistic Regression | 0.7635 |
+| Word trigram TF-IDF + Logistic Regression | 0.7624 |
+| Word + character TF-IDF + LinearSVC | 0.7606 |
 
 ## Backup Slide: Epochs and Steps
 

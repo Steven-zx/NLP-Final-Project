@@ -23,6 +23,8 @@ from datasets import get_dataset_config_names, load_dataset
 
 HUMAID_REPO = "QCRI/HumAID-events"
 CRISISBENCH_REPO = "QCRI/CrisisBench-all-lang"
+DISASTER_RESPONSE_MESSAGES_REPO = "HFAbrar/disaster_response_messages"
+CRISISMMD_REPO = "QCRI/CrisisMMD"
 
 TYPHOON_YOLANDA_URLS = {
     "train": {
@@ -71,7 +73,41 @@ CATEGORY_NORMALIZATION = {
     "not_humanitarian": "not_humanitarian",
     "not_applicable": "not_humanitarian",
     "not_labeled": "not_humanitarian",
+    "vehicle_damage": "infrastructure_and_utility_damage",
+    "mild_damage": "infrastructure_and_utility_damage",
+    "severe_damage": "infrastructure_and_utility_damage",
+    "little_or_no_damage": "other_relevant_information",
 }
+
+DRM_CATEGORY_PRIORITY = [
+    ("search_and_rescue", "requests_or_needs"),
+    ("request", "requests_or_needs"),
+    ("missing_people", "missing_or_found_people"),
+    ("medical_help", "injured_or_dead_people"),
+    ("medical_products", "disease_related"),
+    ("hospitals", "disease_related"),
+    ("death", "injured_or_dead_people"),
+    ("shelter", "displaced_people_and_evacuations"),
+    ("refugees", "displaced_people_and_evacuations"),
+    ("aid_centers", "displaced_people_and_evacuations"),
+    ("infrastructure_related", "infrastructure_and_utility_damage"),
+    ("transport", "infrastructure_and_utility_damage"),
+    ("buildings", "infrastructure_and_utility_damage"),
+    ("electricity", "infrastructure_and_utility_damage"),
+    ("other_infrastructure", "infrastructure_and_utility_damage"),
+    ("weather_related", "caution_and_advice"),
+    ("floods", "caution_and_advice"),
+    ("storm", "caution_and_advice"),
+    ("fire", "caution_and_advice"),
+    ("earthquake", "caution_and_advice"),
+    ("other_weather", "caution_and_advice"),
+    ("water", "rescue_volunteering_or_donation_effort"),
+    ("food", "rescue_volunteering_or_donation_effort"),
+    ("clothing", "rescue_volunteering_or_donation_effort"),
+    ("money", "rescue_volunteering_or_donation_effort"),
+    ("offer", "rescue_volunteering_or_donation_effort"),
+    ("other_aid", "rescue_volunteering_or_donation_effort"),
+]
 
 URGENCY_BY_CATEGORY = {
     "requests_or_needs": "critical",
@@ -120,6 +156,11 @@ def clean_text(value: object) -> str:
     return " ".join(str(value or "").replace("\r", " ").replace("\n", " ").split())
 
 
+def normalized_text_key(value: object) -> str:
+    text = clean_text(value).lower()
+    return " ".join(text.split())
+
+
 def apply_limit(df: pd.DataFrame, max_rows: int | None) -> pd.DataFrame:
     if max_rows is None or max_rows <= 0 or len(df) <= max_rows:
         return df
@@ -144,6 +185,22 @@ def standard_columns(df: pd.DataFrame) -> pd.DataFrame:
         if column not in df.columns:
             df[column] = ""
     return df[columns]
+
+
+def disaster_response_category(row: pd.Series) -> str:
+    related = int(row.get("related") or 0)
+    if related == 0:
+        return "not_humanitarian"
+
+    active = []
+    for column, category in DRM_CATEGORY_PRIORITY:
+        if int(row.get(column) or 0) == 1:
+            active.append(column)
+            return category
+
+    if related == 2:
+        return "not_humanitarian"
+    return "other_relevant_information"
 
 
 def load_humaid(max_per_event_split: int | None = None) -> pd.DataFrame:
@@ -213,6 +270,78 @@ def load_crisisbench(
                 }
             )
         )
+    return standard_columns(pd.concat(frames, ignore_index=True))
+
+
+def load_disaster_response_messages(max_per_split: int | None = None) -> pd.DataFrame:
+    frames = []
+    dataset = load_dataset(DISASTER_RESPONSE_MESSAGES_REPO)
+    for split, rows in dataset.items():
+        df = rows.to_pandas()
+        df = apply_limit(df, max_per_split)
+        category = df.apply(disaster_response_category, axis=1)
+        original_label = []
+        for _, row in df.iterrows():
+            active = [column for column, _ in DRM_CATEGORY_PRIORITY if int(row.get(column) or 0) == 1]
+            if int(row.get("related") or 0) == 0:
+                active = ["related=0"]
+            elif int(row.get("related") or 0) == 2 and not active:
+                active = ["related=2"]
+            elif not active:
+                active = ["related=1"]
+            original_label.append("|".join(active))
+
+        frames.append(
+            pd.DataFrame(
+                {
+                    "text": df["message"].map(clean_text),
+                    "category": category,
+                    "urgency": category.map(urgency_for),
+                    "task": "humanitarian_category",
+                    "split": split,
+                    "source_dataset": "HFAbrar/disaster_response_messages",
+                    "event": df["genre"].astype(str),
+                    "language": "en",
+                    "tweet_id": [f"drm-{split}-{idx}" for idx in df.index],
+                    "original_label": original_label,
+                    "source_file": DISASTER_RESPONSE_MESSAGES_REPO,
+                }
+            )
+        )
+    return standard_columns(pd.concat(frames, ignore_index=True))
+
+
+def load_crisismmd(include_damage: bool = True, max_per_split: int | None = None) -> pd.DataFrame:
+    frames = []
+    configs = ["humanitarian"]
+    if include_damage:
+        configs.append("damage")
+
+    for config in configs:
+        dataset = load_dataset(CRISISMMD_REPO, config)
+        label_names = dataset["train"].features["label"].names
+        for split, rows in dataset.items():
+            df = rows.to_pandas()
+            df = apply_limit(df, max_per_split)
+            labels = df["label"].map(lambda idx: label_names[int(idx)])
+            category = labels.map(normalize_category)
+            frames.append(
+                pd.DataFrame(
+                    {
+                        "text": df["tweet_text"].map(clean_text),
+                        "category": category,
+                        "urgency": category.map(urgency_for),
+                        "task": "humanitarian_category",
+                        "split": split,
+                        "source_dataset": f"QCRI/CrisisMMD/{config}",
+                        "event": df["event_name"].astype(str),
+                        "language": "en",
+                        "tweet_id": df["tweet_id"].astype(str),
+                        "original_label": labels.astype(str),
+                        "source_file": f"{CRISISMMD_REPO}:{config}",
+                    }
+                )
+            )
     return standard_columns(pd.concat(frames, ignore_index=True))
 
 
@@ -307,12 +436,18 @@ def add_label_ids(df: pd.DataFrame, label_column: str = "category") -> tuple[pd.
     return df, mapping
 
 
-def write_outputs(all_data: pd.DataFrame, output_dir: Path) -> dict:
+def write_outputs(all_data: pd.DataFrame, output_dir: Path, expanded: bool = False) -> dict:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     all_data = all_data.dropna(subset=["text", "category"])
     all_data = all_data[all_data["text"].str.strip() != ""]
-    all_data = all_data.drop_duplicates(subset=["text", "task", "category"]).reset_index(drop=True)
+    if expanded:
+        all_data = all_data.copy()
+        all_data["_normalized_text"] = all_data["text"].map(normalized_text_key)
+        all_data = all_data.drop_duplicates(subset=["_normalized_text"]).drop(columns=["_normalized_text"])
+    else:
+        all_data = all_data.drop_duplicates(subset=["text", "task", "category"])
+    all_data = all_data.reset_index(drop=True)
 
     humanitarian = all_data[all_data["task"] == "humanitarian_category"].copy()
     informativeness = all_data[all_data["task"] == "informativeness"].copy()
@@ -324,11 +459,12 @@ def write_outputs(all_data: pd.DataFrame, output_dir: Path) -> dict:
 
     all_with_labels = pd.concat([humanitarian, informativeness, sentiment], ignore_index=True)
 
-    master_path = output_dir / "disaster_posts_master.csv.gz"
-    humanitarian_path = output_dir / "disaster_humanitarian_categories.csv"
-    informativeness_path = output_dir / "disaster_informativeness.csv"
-    sentiment_path = output_dir / "typhoon_yolanda_sentiment.csv"
-    summary_path = output_dir / "disaster_dataset_summary.json"
+    suffix = "_expanded" if expanded else ""
+    master_path = output_dir / f"disaster_posts_master{suffix}.csv.gz"
+    humanitarian_path = output_dir / f"disaster_humanitarian_categories{suffix}.csv"
+    informativeness_path = output_dir / f"disaster_informativeness{suffix}.csv"
+    sentiment_path = output_dir / f"typhoon_yolanda_sentiment{suffix}.csv"
+    summary_path = output_dir / f"disaster_dataset_summary{suffix}.json"
 
     all_with_labels.to_csv(master_path, index=False, compression="gzip")
     humanitarian.to_csv(humanitarian_path, index=False)
@@ -389,11 +525,28 @@ def main() -> None:
     parser.add_argument("--skip-crisisbench", action="store_true")
     parser.add_argument("--skip-typhoon-yolanda", action="store_true")
     parser.add_argument("--skip-local-crisislex", action="store_true")
+    parser.add_argument("--include-disaster-response-messages", action="store_true")
+    parser.add_argument("--include-crisismmd", action="store_true")
+    parser.add_argument("--include-trec-is", action="store_true", help="Reserved for a future TREC-IS importer.")
+    parser.add_argument(
+        "--max-disaster-response-messages-per-split",
+        type=int,
+        default=0,
+        help="Optional cap per Disaster Response Messages split. 0 means no cap.",
+    )
+    parser.add_argument(
+        "--max-crisismmd-per-split",
+        type=int,
+        default=0,
+        help="Optional cap per CrisisMMD split/config. 0 means no cap.",
+    )
     args = parser.parse_args()
 
     frames = []
     max_humaid = args.max_humaid_per_event_split or None
     max_crisisbench = args.max_crisisbench_per_split or None
+    max_drm = args.max_disaster_response_messages_per_split or None
+    max_crisismmd = args.max_crisismmd_per_split or None
     languages = parse_languages(args.crisisbench_languages)
 
     if not args.skip_humaid:
@@ -414,15 +567,28 @@ def main() -> None:
         print("Loading local CrisisLexT26 files...")
         frames.append(load_local_crisislex(Path(args.crisislex_dir)))
 
+    if args.include_disaster_response_messages:
+        print("Loading Disaster Response Messages from Hugging Face...")
+        frames.append(load_disaster_response_messages(max_per_split=max_drm))
+
+    if args.include_crisismmd:
+        print("Loading CrisisMMD humanitarian and damage text from Hugging Face...")
+        frames.append(load_crisismmd(include_damage=True, max_per_split=max_crisismmd))
+
+    if args.include_trec_is:
+        print("TREC-IS importer is not implemented yet; skipping. Use this dataset as a future extension.")
+
     if not frames:
         raise SystemExit("No datasets selected.")
 
     print("Writing normalized datasets...")
     all_data = pd.concat(frames, ignore_index=True)
-    summary = write_outputs(all_data, Path(args.output_dir))
+    expanded = bool(args.include_disaster_response_messages or args.include_crisismmd or args.include_trec_is)
+    summary = write_outputs(all_data, Path(args.output_dir), expanded=expanded)
 
     print(json.dumps(summary["row_counts"], indent=2))
-    print(f"Done. Summary written to {Path(args.output_dir) / 'disaster_dataset_summary.json'}")
+    summary_name = "disaster_dataset_summary_expanded.json" if expanded else "disaster_dataset_summary.json"
+    print(f"Done. Summary written to {Path(args.output_dir) / summary_name}")
 
 
 if __name__ == "__main__":

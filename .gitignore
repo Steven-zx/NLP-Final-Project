@@ -21,6 +21,8 @@ outputs/transformer_checkpoints/
 
 # Optional local fine-tuned transformer artifacts; regenerate with train_disaster_transformer.py
 models/disaster_transformer/
+models/disaster_transformer_expanded/
+outputs/expanded_transformer/transformer_checkpoints/
 
 # OS files
 .DS_Store

@@ -48,5 +48,22 @@
     "donation_or_volunteering": "moderate",
     "general_update": "low",
     "not_humanitarian": "low"
-  }
+  },
+  "top_confusions": [
+    {
+      "true_label": "general_update",
+      "predicted_label": "not_humanitarian",
+      "count": 331
+    },
+    {
+      "true_label": "not_humanitarian",
+      "predicted_label": "general_update",
+      "count": 250
+    },
+    {
+      "true_label": "general_update",
+      "predicted_label": "infrastructure_damage",
+      "count": 153
+    }
+  ]
 }

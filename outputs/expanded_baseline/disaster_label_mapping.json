@@ -1,0 +1,52 @@
+{
+  "labels": [
+    "rescue_or_urgent_needs",
+    "medical_or_casualties",
+    "evacuation_or_displacement",
+    "infrastructure_damage",
+    "warnings_or_advice",
+    "donation_or_volunteering",
+    "general_update",
+    "not_humanitarian"
+  ],
+  "label_to_id": {
+    "rescue_or_urgent_needs": 0,
+    "medical_or_casualties": 1,
+    "evacuation_or_displacement": 2,
+    "infrastructure_damage": 3,
+    "warnings_or_advice": 4,
+    "donation_or_volunteering": 5,
+    "general_update": 6,
+    "not_humanitarian": 7
+  },
+  "id_to_label": {
+    "0": "rescue_or_urgent_needs",
+    "1": "medical_or_casualties",
+    "2": "evacuation_or_displacement",
+    "3": "infrastructure_damage",
+    "4": "warnings_or_advice",
+    "5": "donation_or_volunteering",
+    "6": "general_update",
+    "7": "not_humanitarian"
+  },
+  "display_names": {
+    "rescue_or_urgent_needs": "Rescue or Urgent Needs",
+    "medical_or_casualties": "Medical or Casualties",
+    "evacuation_or_displacement": "Evacuation or Displacement",
+    "infrastructure_damage": "Infrastructure Damage",
+    "warnings_or_advice": "Warnings or Advice",
+    "donation_or_volunteering": "Donation or Volunteering",
+    "general_update": "General Update",
+    "not_humanitarian": "Not Humanitarian"
+  },
+  "urgency_by_label": {
+    "rescue_or_urgent_needs": "critical",
+    "medical_or_casualties": "critical",
+    "evacuation_or_displacement": "high",
+    "infrastructure_damage": "high",
+    "warnings_or_advice": "moderate",
+    "donation_or_volunteering": "moderate",
+    "general_update": "low",
+    "not_humanitarian": "low"
+  }
+}

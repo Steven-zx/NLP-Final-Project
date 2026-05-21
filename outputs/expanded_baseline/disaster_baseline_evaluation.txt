@@ -1,0 +1,115 @@
+RescueText PH Baseline Evaluation
+========================================
+Selected model: tfidf_word_bigram_logreg
+Accuracy: 0.7197
+Precision macro: 0.7220
+Recall macro: 0.7293
+F1 macro: 0.7244
+
+Validation Model Comparison
+                  model_name  accuracy  precision_macro  recall_macro  f1_macro
+    tfidf_word_bigram_logreg    0.7168           0.7204        0.7288    0.7233
+   tfidf_word_trigram_logreg    0.7160           0.7195        0.7282    0.7224
+   tfidf_word_char_linearsvc    0.7124           0.7185        0.7235    0.7202
+tfidf_word_trigram_linearsvc    0.7095           0.7151        0.7208    0.7172
+
+Classification Report
+                            precision    recall  f1-score   support
+
+    Rescue or Urgent Needs       0.71      0.72      0.71      1513
+     Medical or Casualties       0.82      0.79      0.81      1536
+Evacuation or Displacement       0.76      0.81      0.78       740
+     Infrastructure Damage       0.74      0.78      0.76      1527
+        Warnings or Advice       0.67      0.69      0.68      1504
+  Donation or Volunteering       0.73      0.80      0.76      1599
+            General Update       0.63      0.51      0.57      1823
+          Not Humanitarian       0.72      0.74      0.73      1758
+
+                  accuracy                           0.72     12000
+                 macro avg       0.72      0.73      0.72     12000
+              weighted avg       0.72      0.72      0.72     12000
+
+
+Confusion Matrix
+[
+  [
+    1084,
+    53,
+    33,
+    41,
+    45,
+    146,
+    35,
+    76
+  ],
+  [
+    80,
+    1219,
+    20,
+    51,
+    25,
+    39,
+    65,
+    37
+  ],
+  [
+    36,
+    7,
+    597,
+    35,
+    22,
+    19,
+    8,
+    16
+  ],
+  [
+    44,
+    40,
+    15,
+    1184,
+    84,
+    25,
+    101,
+    34
+  ],
+  [
+    54,
+    23,
+    49,
+    64,
+    1033,
+    66,
+    115,
+    100
+  ],
+  [
+    105,
+    8,
+    27,
+    28,
+    50,
+    1285,
+    56,
+    40
+  ],
+  [
+    51,
+    86,
+    35,
+    149,
+    216,
+    138,
+    936,
+    212
+  ],
+  [
+    69,
+    47,
+    10,
+    56,
+    64,
+    48,
+    166,
+    1298
+  ]
+]

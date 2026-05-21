@@ -1,16 +1,16 @@
 """
-Enhanced Text Preprocessing Pipeline for Bilingual Hate Speech Detection
-=========================================================================
+Enhanced Text Preprocessing Pipeline for RescueText PH
+=====================================================
 
 This module provides a comprehensive text preprocessing pipeline designed for
-bilingual English-Filipino hate speech detection. It implements:
+bilingual English-Filipino disaster-response text classification. It implements:
 
 1. Regex-based cleaning (URLs, mentions, hashtags)
 2. Explicit tokenization using NLTK word_tokenize
 3. Combined English and Tagalog stopword removal
 4. English lemmatization (WordNetLemmatizer)
 5. Tagalog stemming (custom suffix removal for Filipino text)
-6. Sequential processing: English lemmatization → Tagalog stemming
+6. Sequential processing: English lemmatization -> Tagalog stemming
 
 The preprocessing is applied uniformly to all text (no language detection),
 ensuring consistent behavior during both training and inference.
@@ -189,7 +189,7 @@ class PreprocessedText(NamedTuple):
 
 class TextPreprocessor:
     """
-    Comprehensive bilingual text preprocessor for hate speech detection.
+    Comprehensive bilingual text preprocessor for disaster-response text.
     
     This class handles the complete preprocessing pipeline:
     1. Regex cleaning (URLs, mentions, hashtags)
@@ -236,7 +236,7 @@ class TextPreprocessor:
         Operations:
         - Remove URLs (http://, https://, www.)
         - Remove mentions (@username)
-        - Remove hashtag symbol but keep text (#hashtag → hashtag)
+        - Remove hashtag symbol but keep text (#hashtag -> hashtag)
         - Normalize multiple whitespaces to single space
         - Strip leading/trailing whitespace
         
@@ -252,7 +252,7 @@ class TextPreprocessor:
         # Remove mentions (@username)
         text = re.sub(r'@\w+', '', text)
         
-        # Remove hashtag symbol but keep content (#hate → hate)
+        # Remove hashtag symbol but keep content (#FloodPH -> FloodPH)
         text = re.sub(r'#(\w+)', r'\1', text)
         
         # Normalize whitespace
@@ -297,7 +297,7 @@ class TextPreprocessor:
         Apply English lemmatization to tokens.
         
         Uses NLTK's WordNetLemmatizer to convert words to their base form
-        (e.g., "running" → "run", "better" → "good").
+        (e.g., "running" -> "run", "better" -> "good").
         
         For non-English or unknown words, returns original token.
         
@@ -486,7 +486,7 @@ if __name__ == '__main__':
     
     # Test cases: English, Filipino, Mixed
     test_texts = [
-        "Check this hate speech http://example.com @user #racism",
+        "Need rescue near the flooded bridge http://example.com @user #FloodPH",
         "Ang aming #TikTok ay puno ng cyberbullying laban sa LGBT community",
         "I absolutely hate this hindi ko maintindihan ang kanyang behavior #angry",
         "This is normal positive text without any issues whatsoever",
@@ -509,4 +509,4 @@ if __name__ == '__main__':
         print(f"Token count:     {result.token_count}")
         print("-" * 80)
     
-    print("\n✓ Preprocessing pipeline validation complete!")
+    print("\nPreprocessing pipeline validation complete!")

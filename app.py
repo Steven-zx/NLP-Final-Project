@@ -43,6 +43,7 @@ FLASK_DEBUG = False
 
 BASELINE_MODEL_PATH = "models/disaster_baseline.pkl"
 TRANSFORMER_MODEL_PATH = "models/disaster_transformer"
+ACTIONABILITY_MODEL_PATH = "models/actionability_baseline.pkl"
 
 DEFAULT_MODEL = "transformer"
 LOG_FILE = "api_predictions.log"
@@ -176,6 +177,7 @@ class ModelManager:
         for name, loader in (
             ("baseline", self._load_baseline),
             ("transformer", self._load_transformer),
+            ("actionability", self._load_actionability),
         ):
             try:
                 loader()
@@ -220,16 +222,41 @@ class ModelManager:
         }
         logger.info("Loaded transformer model")
 
+    def _load_actionability(self) -> None:
+        if not os.path.exists(ACTIONABILITY_MODEL_PATH):
+            logger.warning("Actionability model not found: %s", ACTIONABILITY_MODEL_PATH)
+            return
+
+        artifact = joblib.load(ACTIONABILITY_MODEL_PATH)
+        pipeline = artifact["pipeline"] if isinstance(artifact, dict) and "pipeline" in artifact else artifact
+        model_name = artifact.get("model_name", "Actionability Baseline") if isinstance(artifact, dict) else "Actionability Baseline"
+        self.models["actionability"] = {
+            "pipeline": pipeline,
+            "id_to_label": artifact.get("id_to_label", {0: "non_actionable", 1: "actionable"}) if isinstance(artifact, dict) else {0: "non_actionable", 1: "actionable"},
+        }
+        self.model_info["actionability"] = {
+            "name": model_name,
+            "type": "secondary_binary_classifier",
+            "description": "Binary model that predicts whether a post is actionable for disaster triage",
+            "status": "loaded",
+            "inference_device": "cpu",
+        }
+        logger.info("Loaded actionability model")
+
     def available_models(self) -> Dict[str, Dict[str, Any]]:
         return self.model_info
+
+    def available_category_models(self) -> Dict[str, Dict[str, Any]]:
+        return {name: info for name, info in self.model_info.items() if name != "actionability"}
 
     def default_model(self) -> str:
         if DEFAULT_MODEL in self.models:
             return DEFAULT_MODEL
         if "baseline" in self.models:
             return "baseline"
-        if self.models:
-            return next(iter(self.models))
+        category_models = [name for name in self.models if name != "actionability"]
+        if category_models:
+            return category_models[0]
         return DEFAULT_MODEL
 
     def preprocessing_details(self, text: str) -> dict:
@@ -260,12 +287,14 @@ class ModelManager:
 
         best = top_predictions[0]["category"]
         urgency = urgency_for_label(best)
+        actionability = self.predict_actionability(text, best)
 
         return {
             "category": best,
             "category_display": display_label(best),
             "urgency": urgency,
             "urgency_display": URGENCY_DISPLAY_NAMES.get(urgency, urgency.title()),
+            "actionability": actionability,
             "confidence": float(top_predictions[0]["confidence"]),
             "top_predictions": top_predictions,
             "preprocessing": self.preprocessing_details(text),
@@ -289,7 +318,7 @@ class ModelManager:
             boosted = boosted / boosted.sum()
         return boosted
 
-    def _probability_like(self, pipeline: Any, texts: List[str]) -> np.ndarray:
+    def _probability_like(self, pipeline: Any, texts: List[str], n_classes: int = len(FINAL_LABELS)) -> np.ndarray:
         if hasattr(pipeline, "predict_proba"):
             return pipeline.predict_proba(texts)
 
@@ -302,9 +331,34 @@ class ModelManager:
             return exp_scores / exp_scores.sum(axis=1, keepdims=True)
 
         predictions = pipeline.predict(texts)
-        probabilities = np.zeros((len(predictions), len(FINAL_LABELS)), dtype=float)
+        probabilities = np.zeros((len(predictions), n_classes), dtype=float)
         probabilities[np.arange(len(predictions)), predictions] = 1.0
         return probabilities
+
+    def predict_actionability(self, text: str, category: str | None = None) -> Dict[str, Any]:
+        if "actionability" not in self.models:
+            category = category or "not_humanitarian"
+            label = "actionable" if category not in {"general_update", "not_humanitarian"} else "non_actionable"
+            return {
+                "label": label,
+                "display_name": "Actionable" if label == "actionable" else "Non-Actionable",
+                "confidence": None,
+                "model": "category_rule_fallback",
+            }
+
+        processed = self.preprocessor.get_tokens_as_string(text)
+        artifact = self.models["actionability"]
+        pipeline = artifact["pipeline"]
+        id_to_label = {int(key): value for key, value in artifact["id_to_label"].items()}
+        probabilities = self._probability_like(pipeline, [processed], n_classes=len(id_to_label))[0]
+        best_idx = int(probabilities.argmax())
+        label = id_to_label[best_idx]
+        return {
+            "label": label,
+            "display_name": "Actionable" if label == "actionable" else "Non-Actionable",
+            "confidence": float(probabilities[best_idx]),
+            "model": "actionability",
+        }
 
     def predict_baseline(self, text: str) -> Dict[str, Any]:
         start = time.time()
@@ -340,8 +394,9 @@ class ModelManager:
             raise ValueError("Text must be a non-empty string")
 
         selected = model_name or self.default_model()
-        if selected not in self.models:
-            raise ValueError(f"Model '{selected}' is not available. Available models: {list(self.models)}")
+        category_models = [name for name in self.models if name != "actionability"]
+        if selected not in category_models:
+            raise ValueError(f"Model '{selected}' is not available. Available category models: {category_models}")
 
         if selected == "baseline":
             return self.predict_baseline(text)
@@ -392,7 +447,12 @@ def list_models():
     return jsonify(
         {
             "success": True,
-            "models": manager().available_models(),
+            "models": manager().available_category_models(),
+            "secondary_models": {
+                name: info
+                for name, info in manager().available_models().items()
+                if name == "actionability"
+            },
             "default_model": manager().default_model(),
             "labels": [
                 {

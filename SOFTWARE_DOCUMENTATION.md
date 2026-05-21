@@ -31,6 +31,7 @@ Dataset sources:
 - **QCRI/HumAID-events:** disaster tweets labeled by humanitarian category.
 - **QCRI/CrisisBench-all-lang:** multilingual crisis benchmark data filtered by default to English and Philippine-related language codes.
 - **SEACrowd Typhoon Yolanda Tweets:** Filipino Typhoon Yolanda sentiment data used for local relevance and discussion, not as the main category training data because it is sentiment-labeled.
+- **Optional expansion:** Disaster Response Messages and CrisisMMD can be imported into separate `_expanded` files for additional label-coverage experiments.
 
 The final project taxonomy simplifies raw humanitarian labels into 8 categories:
 
@@ -59,7 +60,7 @@ Core features:
 - Preprocess text by removing URLs and mentions, keeping hashtag words, lowercasing, tokenizing, removing English/Filipino stopwords, lemmatizing English words, and applying lightweight Filipino stemming.
 - Predict the humanitarian category using a selected model.
 - Apply a transparent disaster keyword boost for high-signal terms such as rescue, stranded, injured, evacuation, collapsed, warning, donation, and sale. This improves Taglish demo handling while keeping the trained model as the primary classifier.
-- Display the predicted category, urgency level, confidence score, top predictions, model used, inference time, cleaned text, and final tokens.
+- Display the predicted category, urgency level, actionability, confidence score, top predictions, model used, inference time, cleaned text, and final tokens.
 - Support batch prediction through `/api/batch_predict`.
 - Provide model and health metadata through `/api/models` and `/api/health`.
 
@@ -75,15 +76,27 @@ API endpoints:
 Implemented models:
 
 - **Baseline:** tuned classical TF-IDF models with class balancing. The script compares word bigram Logistic Regression, word trigram Logistic Regression, word trigram LinearSVC, and word+character LinearSVC, then selects the highest validation macro F1 model.
+- **Improved baseline:** trained on a cleaner subset with ambiguous-label handling, duplicate removal, short-text filtering, and additional candidates including ComplementNB, SGD, and calibrated LinearSVC.
+- **Secondary actionability model:** binary classifier for actionable vs non-actionable disaster triage.
 - **Main model script:** multilingual transformer fine-tuning through `train_disaster_transformer.py`.
 
-Current tuned baseline result using a balanced 80,000-row sample:
+Current improved baseline result using a clean balanced 80,000-row sample:
 
-- Selected model: `tfidf_word_char_linearsvc`
-- Accuracy: 0.7360
-- Macro Precision: 0.7429
-- Macro Recall: 0.7507
-- Macro F1-score: 0.7459
+- Selected model: `tfidf_word_bigram_calibrated_linearsvc`
+- Accuracy: 0.7600
+- Macro Precision: 0.7654
+- Macro Recall: 0.7733
+- Macro F1-score: 0.7689
+- Weighted F1-score: 0.7576
+
+Secondary actionability result:
+
+- Selected model: `actionability_word_char_sgd`
+- Accuracy: 0.8683
+- Macro Precision: 0.8535
+- Macro Recall: 0.8690
+- Macro F1-score: 0.8596
+- Weighted F1-score: 0.8697
 
 Current transformer result using a balanced 12,000-row sample for 1 epoch:
 
@@ -97,15 +110,19 @@ The transformer training script supports larger runs, such as `--sample-size 240
 Evaluation artifacts:
 
 - `models/disaster_baseline.pkl`
+- `models/actionability_baseline.pkl`
 - `outputs/disaster_baseline_evaluation.txt`
 - `outputs/disaster_baseline_predictions.csv`
 - `outputs/disaster_baseline_model_comparison.csv`
+- `outputs/actionability/actionability_evaluation.txt`
 - `outputs/disaster_label_mapping.json`
 - `outputs/disaster_transformer_evaluation.txt`
 - `outputs/disaster_transformer_predictions.csv`
 - `outputs/disaster_confusion_matrix.png`
 
 The baseline is important for rubric compliance because it gives a clear comparison point before using the transformer model.
+
+Metric improvement and dataset expansion were tested. The expanded dataset added Disaster Response Messages and unique CrisisMMD rows, but the first expanded 8-class baseline scored lower than the current final baseline. The clean subset improved the final 8-class macro F1, so it is now the main demo dataset. Details are recorded in `METRIC_IMPROVEMENT_REPORT.md` and `DATASET_EXPANSION_REPORT.md`.
 
 ## Known Limitations
 
@@ -115,6 +132,7 @@ The baseline is important for rubric compliance because it gives a clear compari
 - Urgency is rule-derived from category rather than separately annotated by emergency experts.
 - Location extraction is not yet implemented.
 - Transformer training may require more time or GPU access for best performance.
+- The actionability model improves triage reliability but did not honestly reach 90%, so the project should report the measured 86.83% accuracy.
 
 ## Future Enhancements and Roadmap
 
