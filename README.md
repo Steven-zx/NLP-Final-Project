@@ -17,7 +17,7 @@ This project follows the CCS 249 final project requirements:
 - Software documentation
 - Presentation/demo outline
 
-No GPT, third-party classifier API, or external prediction service is used.
+No GPT, third-party classifier API, or external prediction service is used. The transformer option uses a pretrained DistilBERT checkpoint fine-tuned locally inside this project, which keeps prediction offline and reproducible.
 
 ## Main Dataset
 
@@ -65,7 +65,7 @@ Urgency is derived from the predicted category:
 Train the baseline model:
 
 ```bash
-python train_disaster_baseline.py --sample-size 40000
+python train_disaster_baseline.py --sample-size 80000
 ```
 
 Train the transformer model:
@@ -73,6 +73,8 @@ Train the transformer model:
 ```bash
 python train_disaster_transformer.py --sample-size 24000 --epochs 1
 ```
+
+The script can run with `--sample-size 24000`, but the reported final transformer evaluation below used `--sample-size 12000 --epochs 1` because of local compute limits.
 
 The transformer model can be several hundred MB. It is ignored by `.gitignore` by default so GitHub will not reject the push. Use Git LFS only if the final transformer artifact must be committed.
 
@@ -82,6 +84,7 @@ Baseline artifacts are saved to:
 models/disaster_baseline.pkl
 outputs/disaster_baseline_evaluation.txt
 outputs/disaster_baseline_predictions.csv
+outputs/disaster_baseline_model_comparison.csv
 ```
 
 Transformer artifacts are saved to:
@@ -139,12 +142,13 @@ Example response:
 
 ## Evaluation
 
-Current baseline result using a balanced 40,000-row sample:
+Current tuned baseline result using a balanced 80,000-row sample:
 
-- Accuracy: `0.7333`
-- Macro Precision: `0.7336`
-- Macro Recall: `0.7364`
-- Macro F1-score: `0.7332`
+- Selected model: `tfidf_word_char_linearsvc`
+- Accuracy: `0.7360`
+- Macro Precision: `0.7429`
+- Macro Recall: `0.7507`
+- Macro F1-score: `0.7459`
 
 Current transformer result using a balanced 12,000-row sample for 1 epoch:
 

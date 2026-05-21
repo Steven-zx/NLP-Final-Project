@@ -1,33 +1,30 @@
-# Hate Speech Detection System - Python Dependencies
-# ====================================================
-# All required packages for training, evaluation, and serving models
+# RescueText PH - Python Dependencies
+# ===================================
+# Packages for dataset processing, NLP preprocessing, model training,
+# evaluation, and the Flask demo API.
 # Python 3.8+
 
 # Core Scientific Computing
-numpy>=1.21.0,<2.0.0
-pandas>=1.3.0,<2.0.0
+numpy>=1.21.0
+pandas>=1.3.0
 scipy>=1.7.0
 
-# PyTorch & Deep Learning
-torch>=1.10.0
-torchvision>=0.11.0  # For image utilities (optional, remove if not needed)
-torchaudio>=0.10.0   # For audio utilities (optional, remove if not needed)
+# Machine Learning and Evaluation
+scikit-learn>=1.3.0
+joblib>=1.1.0
+matplotlib>=3.5.0
 
-# Transformer Models & NLP
+# Transformer Models and NLP
+torch>=1.10.0
 transformers>=4.20.0
 datasets>=2.6.0
 tokenizers>=0.13.0
 
-# Machine Learning & Evaluation
-scikit-learn>=1.0.0,<1.3.0
-joblib>=1.1.0
-matplotlib>=3.5.0
-
-# Text Processing & NLP
+# Text Processing
 nltk>=3.6.0
 unidecode>=1.2.0
 
-# Web Framework & API
+# Web Framework and API
 flask>=2.1.0
 flask-cors>=3.0.10
 werkzeug>=2.1.0
@@ -37,19 +34,6 @@ python-dotenv>=0.20.0
 tqdm>=4.63.0
 requests>=2.27.0
 
-# Optional: Weights & Biases Integration (for hyperparameter tuning)
-# wandb>=0.12.0
-
-# Optional: GPU Acceleration (PyTorch Lightning - alternative to manual training)
-# pytorch-lightning>=1.6.0
-
-# Optional: NVIDIA Apex for mixed precision training (requires CUDA)
-# Note: Install separately: pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" apex
-# apex>=0.1
-
 # Development Dependencies (optional)
 # pytest>=6.2.5
 # pytest-cov>=2.12.1
-# black>=22.0.0
-# flake8>=4.0.0
-# mypy>=0.950

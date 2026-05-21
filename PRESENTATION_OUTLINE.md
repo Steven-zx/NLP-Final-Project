@@ -1,9 +1,10 @@
-# RescueText PH Full PPT Outline
+# RescueText PH PPT Outline
 
-Target presentation length: 5-10 minutes  
-Target Q&A length: 5-10 minutes
+Target main presentation length: 5-10 minutes  
+Recommended main deck: 14 slides  
+Backup slides: use only during Q&A
 
-## Slide 1: Title Slide
+## Slide 1: Title
 
 **Title:** RescueText PH  
 **Subtitle:** Filipino-English Disaster Relief Post Classification and Urgency Triage System  
@@ -11,13 +12,13 @@ Target Q&A length: 5-10 minutes
 **Group Members:** Add names here
 
 **Speaker Notes:**  
-Introduce the system as an NLP application that helps classify disaster-related social media posts into response categories and urgency levels.
+Introduce RescueText PH as an NLP system that turns disaster-related posts into response categories and urgency levels.
 
-## Slide 2: Problem Statement
+## Slide 2: Problem and Motivation
 
-During disasters, people post urgent information on social media, such as rescue requests, evacuation updates, damage reports, medical concerns, and donation offers.
+During disasters, people post rescue requests, evacuation updates, medical concerns, damage reports, warnings, and donation offers on social media.
 
-However, these posts are:
+These posts are:
 
 - Noisy and informal
 - Written in English, Filipino, or Taglish
@@ -26,12 +27,12 @@ However, these posts are:
 - Difficult to manually sort at scale
 
 **Speaker Notes:**  
-Emphasize that the problem is not only detecting disaster posts, but organizing them into actionable categories for faster response.
+Emphasize that the project is not only detecting disaster posts. It organizes them into actionable response categories.
 
-## Slide 3: Purpose and Target Users
+## Slide 3: Project Goal and Users
 
-**Purpose:**  
-RescueText PH automatically classifies disaster-related posts and assigns urgency levels to support faster disaster information triage.
+**Goal:**  
+Classify disaster-related social media posts into humanitarian categories and assign an urgency level for faster triage.
 
 **Target Users:**
 
@@ -43,37 +44,36 @@ RescueText PH automatically classifies disaster-related posts and assigns urgenc
 
 **Why NLP is appropriate:**
 
-- Input data is natural language text
-- Posts contain meaningful patterns, keywords, and context
-- Classification can help prioritize large volumes of messages
+- Input is natural language text
+- Posts contain meaningful keywords, context, and intent
+- Automated classification can prioritize large message volumes
 
 **Speaker Notes:**  
-Connect directly to the rubric: clear problem, objectives, target users, NLP justification, and real-world relevance.
+Connect this directly to the rubric: clear objective, target users, NLP justification, and real-world value.
 
 ## Slide 4: System Overview
 
 **System Flow:**
 
 1. User enters a disaster-related post.
-2. Text is sent to the Flask backend.
-3. Backend preprocesses the text.
-4. Trained model predicts the humanitarian category.
-5. System derives urgency from the predicted category.
-6. Frontend displays category, urgency, confidence, top predictions, and preprocessing details.
+2. Flask backend preprocesses the text.
+3. Model predicts the humanitarian category.
+4. System maps the category to urgency.
+5. Frontend displays category, urgency, confidence, top predictions, and preprocessing details.
 
 **Components:**
 
 - Frontend: HTML, CSS, JavaScript
 - Backend: Flask API
-- NLP Pipeline: preprocessing + classification
-- Models: TF-IDF Logistic Regression baseline and multilingual transformer
+- NLP pipeline: preprocessing + classification
+- Models: tuned TF-IDF baseline and locally fine-tuned multilingual transformer
 
 **Speaker Notes:**  
-Briefly explain that the frontend is for user interaction while the backend contains the NLP methods, satisfying the project requirement.
+This shows the project is a working end-to-end NLP application, not just a notebook.
 
-## Slide 5: Dataset Sources
+## Slide 5: Datasets
 
-**Main Dataset:**  
+**Main training file:**  
 `dataset/processed/disaster_humanitarian_categories.csv`
 
 **Sources integrated:**
@@ -83,7 +83,7 @@ Briefly explain that the frontend is for user interaction while the backend cont
 - QCRI/CrisisBench-all-lang
 - SEACrowd Typhoon Yolanda Tweets
 
-**Dataset Size After Import:**
+**Dataset sizes after import:**
 
 - Master dataset: 393,514 rows
 - Humanitarian category dataset: 220,495 rows
@@ -91,11 +91,11 @@ Briefly explain that the frontend is for user interaction while the backend cont
 - Typhoon Yolanda sentiment dataset: 735 rows
 
 **Speaker Notes:**  
-Explain that HumAID and CrisisBench provide humanitarian labels, CrisisLexT26 adds crisis tweet variety, and Typhoon Yolanda supports local relevance even though it is sentiment-labeled.
+Explain that HumAID and CrisisBench provide category labels, CrisisLexT26 adds crisis tweet variety, and Typhoon Yolanda supports Philippine relevance but is not the main category-training source because it is sentiment-labeled.
 
-## Slide 6: Final Classification Categories
+## Slide 6: Labels and Urgency Mapping
 
-The raw humanitarian labels were simplified into 8 final categories:
+**Final 8 categories:**
 
 1. Rescue or Urgent Needs
 2. Medical or Casualties
@@ -106,49 +106,29 @@ The raw humanitarian labels were simplified into 8 final categories:
 7. General Update
 8. Not Humanitarian
 
-**Speaker Notes:**  
-Explain that simplifying labels helps the model learn clearer classes and makes the demo easier to understand.
+**Urgency mapping:**
 
-## Slide 7: Urgency Mapping
-
-Urgency is derived from predicted category:
-
-**Critical**
-
-- Rescue or Urgent Needs
-- Medical or Casualties
-
-**High**
-
-- Evacuation or Displacement
-- Infrastructure Damage
-
-**Moderate**
-
-- Warnings or Advice
-- Donation or Volunteering
-
-**Low**
-
-- General Update
-- Not Humanitarian
+| Urgency | Categories |
+|---|---|
+| Critical | Rescue or Urgent Needs, Medical or Casualties |
+| High | Evacuation or Displacement, Infrastructure Damage |
+| Moderate | Warnings or Advice, Donation or Volunteering |
+| Low | General Update, Not Humanitarian |
 
 **Speaker Notes:**  
-Clarify that urgency is deterministic and rule-based. The model predicts the category, then the system maps that category to urgency.
+Clarify that the model predicts the category. Urgency is a transparent deterministic layer derived from that category.
 
-## Slide 8: Text Preprocessing Pipeline
+## Slide 7: Text Preprocessing
 
-The system applies a consistent preprocessing pipeline:
+The system applies:
 
-1. Remove URLs
-2. Remove mentions
-3. Preserve hashtag text
-4. Normalize whitespace
-5. Lowercase text
-6. Tokenize words
-7. Remove English and Filipino stopwords
-8. Apply English lemmatization
-9. Apply lightweight Filipino stemming
+- URL and mention removal
+- Hashtag text preservation
+- Lowercasing
+- Tokenization
+- English and Filipino stopword removal
+- English lemmatization
+- Lightweight Filipino stemming
 
 **Example:**
 
@@ -161,272 +141,178 @@ Output tokens:
 > need, rescue, brg, san, isidro, hangg, bubo
 
 **Speaker Notes:**  
-Mention that preprocessing handles noisy social media text and improves feature extraction for both baseline and transformer models.
+Mention that preprocessing makes noisy social media text more usable for TF-IDF and transformer training.
 
-## Slide 9: NLP Task
+## Slide 8: NLP Task
 
-**Primary NLP Task:**  
+**Primary NLP task:**  
 Multi-class text classification
 
 **Input:**  
 A disaster-related social media post
 
 **Output:**  
-One of the 8 humanitarian categories
+One of 8 humanitarian categories
 
-**Additional Output:**  
-Urgency level, confidence score, top predictions, and preprocessing preview
+**Additional outputs:**
+
+- Urgency level
+- Confidence score
+- Top predictions
+- Preprocessing preview
 
 **Speaker Notes:**  
 This slide directly satisfies the requirement to identify and explain the NLP task.
 
-## Slide 10: Baseline Model
+## Slide 9: Baseline Development
 
-**Model:** TF-IDF + Logistic Regression
+**Baseline approach:**  
+Tuned classical TF-IDF models with class balancing.
 
-**Why this baseline was selected:**
+**Compared variants:**
 
-- Fast to train
-- Easy to interpret
-- Works well for text classification
-- Provides a comparison point for advanced models
-- Supports class balancing for uneven categories
+- Word bigram TF-IDF + Logistic Regression
+- Word trigram TF-IDF + Logistic Regression
+- Word trigram TF-IDF + LinearSVC
+- Word + character TF-IDF + LinearSVC
 
-**Training Setup:**
+**Selected baseline:**  
+Word + character TF-IDF + LinearSVC
 
-- Dataset: disaster humanitarian category dataset
-- Sample size: 40,000 balanced rows
-- Split: 70% train, 15% validation, 15% test
-- Features: TF-IDF unigrams and bigrams
-- Classifier: Logistic Regression with balanced class weights
+**Reason selected:**  
+Highest validation macro F1.
 
 **Speaker Notes:**  
-Emphasize that the baseline is required for comparison and is stable enough for the live demo.
+This is stronger than a single baseline because it shows model development, comparison, and validation-based selection.
 
-## Slide 11: Baseline Evaluation
+## Slide 10: Model Evaluation
 
-**Baseline Results:**
+**Baseline final test results, balanced 80,000-row sample:**
 
-- Accuracy: 0.7333
-- Macro Precision: 0.7336
-- Macro Recall: 0.7364
-- Macro F1-score: 0.7332
+- Accuracy: 0.7360
+- Macro Precision: 0.7429
+- Macro Recall: 0.7507
+- Macro F1-score: 0.7459
 
-**Strongest classes:**
-
-- Evacuation or Displacement
-- Medical or Casualties
-- Infrastructure Damage
-
-**Common challenge:**
-
-- General Update can overlap with other categories because disaster updates often contain broad or vague language.
-
-**Speaker Notes:**  
-Discuss the confusion matrix and explain that macro F1 is important because the system has multiple categories.
-
-## Slide 12: Transformer Model
-
-**Model:** DistilBERT Multilingual for Sequence Classification
-
-**Why this model was selected:**
-
-- Supports multilingual text
-- Better suited for English, Filipino, and Taglish
-- Learns contextual meaning beyond keyword frequency
-- Fine-tuned locally on the project dataset
-
-**Training Setup:**
-
-- Model: `distilbert-base-multilingual-cased`
-- Sample size: 12,000 balanced rows
-- Epochs: 1
-- Batch size: 8
-- Approximate training rows: 8,399
-- Approximate training steps: 1,050
-- Validation rows: 1,801
-- Test rows: 1,800
-
-**Speaker Notes:**  
-Explain that 12,000 rows are split into train, validation, and test. The 1,050 steps are batches, not samples.
-
-## Slide 13: Transformer Evaluation
-
-**Transformer Results:**
+**Transformer final test results, balanced 12,000-row sample, 1 epoch:**
 
 - Accuracy: 0.6661
 - Macro Precision: 0.6600
 - Macro Recall: 0.6661
 - Macro F1-score: 0.6608
 
-**Comparison Table:**
+**Comparison:**
 
 | Model | Accuracy | Macro Precision | Macro Recall | Macro F1 |
 |---|---:|---:|---:|---:|
-| TF-IDF + Logistic Regression | 0.7333 | 0.7336 | 0.7364 | 0.7332 |
-| Multilingual Transformer | 0.6661 | 0.6600 | 0.6661 | 0.6608 |
+| Tuned TF-IDF + LinearSVC | 0.7360 | 0.7429 | 0.7507 | 0.7459 |
+| Multilingual DistilBERT | 0.6661 | 0.6600 | 0.6661 | 0.6608 |
 
 **Speaker Notes:**  
-The baseline currently performs better on the balanced sample. Explain that the transformer is more advanced but was limited to one local CPU-friendly epoch, while the baseline is stable and effective for this dataset size.
+Explain that macro F1 matters because categories are uneven. The baseline is currently stronger because the transformer was limited to a small local run.
 
-## Slide 14: Error Analysis and Limitations
+## Slide 11: Transformer Notes and API Rule
 
-**Observed/Expected Error Patterns:**
+**Transformer model:**  
+`distilbert-base-multilingual-cased`
 
-- Rescue and donation posts may both contain words like “help” or “support.”
-- Infrastructure and medical posts can overlap when injuries happen near damaged roads or bridges.
-- General Update is broad and may absorb vague posts.
-- Filipino and Taglish category-labeled data is smaller than English data.
+**Training setup:**
 
-**System Limitations:**
+- Locally fine-tuned on the project dataset
+- Final reported run: `--sample-size 12000 --epochs 1`
+- Batch size: 8
+- About 8,399 training rows
+- About 1,050 training steps
+
+**Important compliance note:**
+
+- No GPT
+- No third-party classifier API
+- No external prediction service
+- Pretrained DistilBERT is fine-tuned and served locally
+
+**Speaker Notes:**  
+Mention that the script can run with `--sample-size 24000`, but the reported result used 12,000 because of local compute limits.
+
+## Slide 12: Error Analysis and Limitations
+
+**Observed challenges:**
+
+- Rescue and donation posts may both contain words like "help" or "support."
+- General Update can overlap with many categories.
+- Infrastructure and medical reports can overlap when injuries happen near damaged roads or buildings.
+- Filipino and Taglish category-labeled data is smaller than English crisis data.
+
+**Limitations:**
 
 - Urgency is rule-derived from category.
 - Location extraction is not yet implemented.
-- Transformer training is limited by local compute.
+- Transformer training was limited by local compute.
 - The system should support, not replace, human responders.
 
 **Speaker Notes:**  
-This slide is important for the highest evaluation score because the rubric asks for insightful analysis of errors and limitations.
+This slide is important for high marks because it shows critical analysis instead of only reporting accuracy.
 
-## Slide 15: Web Application Features
+## Slide 13: Web App and Live Demo
 
-**Frontend Features:**
+**Frontend features:**
 
-- Text input for disaster/social media posts
+- Text input
 - Model selector
 - Prediction result panel
 - Category and urgency display
-- Confidence score
-- Top predictions
+- Confidence and top predictions
 - Preprocessing preview
-- Demo examples with expected categories
-- Category guide
+- Demo examples and category guide
 
-**Backend Features:**
+**Backend endpoints:**
 
-- `/api/health`
-- `/api/models`
-- `/api/predict`
-- `/api/batch_predict`
+- `GET /api/health`
+- `GET /api/models`
+- `POST /api/predict`
+- `POST /api/batch_predict`
 
-**Speaker Notes:**  
-Show that the system is not just a model script. It is a usable frontend-backend NLP application.
+**Demo examples:**
 
-## Slide 16: Live Demo
-
-**Demo Steps:**
-
-1. Open RescueText PH frontend.
-2. Select model.
-3. Use a prepared example or type a new post.
-4. Click Analyze Post.
-5. Explain predicted category, urgency, confidence, and preprocessing preview.
-
-**Prepared Examples:**
-
-- Rescue needed:
-  > Need rescue sa Brgy. San Isidro, baha na hanggang bubong.
-
-- Medical:
-  > Two injured residents near the collapsed bridge need medical assistance immediately.
-
-- Evacuation:
-  > Evacuation center at City High School is open.
-
-- Infrastructure:
-  > Power lines are down along Mabini Street after the typhoon.
-
-- Not humanitarian:
-  > Selling raincoats and flashlights at discounted prices today only.
+- `Need rescue sa Brgy. San Isidro, baha na hanggang bubong.`
+- `Two injured residents near the collapsed bridge need medical assistance immediately.`
+- `Evacuation center at City High School is open.`
+- `Selling raincoats and flashlights at discounted prices today only.`
 
 **Speaker Notes:**  
-Keep the demo short. Use 2-3 examples if time is limited.
+Use only 2-3 examples during the actual presentation to stay within time.
 
-## Slide 17: Technology Stack
-
-**Frontend:**
-
-- HTML
-- CSS
-- JavaScript
-
-**Backend:**
-
-- Python
-- Flask
-- Flask-CORS
-
-**NLP and ML:**
-
-- pandas
-- numpy
-- scikit-learn
-- NLTK
-- PyTorch
-- Hugging Face Transformers
-- Hugging Face Datasets
-
-**Speaker Notes:**  
-Mention that all libraries and modules are disclosed, as required by the project instructions.
-
-## Slide 18: Future Enhancements
-
-Planned improvements:
-
-- Add location extraction for barangays, roads, schools, and cities.
-- Add batch triage dashboard sorted by urgency.
-- Improve Filipino and Taglish disaster-labeled data.
-- Add explainability for model decisions.
-- Add CSV export for responders.
-- Train transformer longer with better compute resources.
-
-**Speaker Notes:**  
-These future enhancements show awareness of the project’s limitations and possible real-world extension.
-
-## Slide 19: Conclusion
+## Slide 14: Conclusion
 
 RescueText PH demonstrates a complete NLP pipeline:
 
-- Real-world problem
-- Relevant crisis datasets
+- Real-world disaster response problem
+- Multiple crisis datasets
 - Text preprocessing
-- Feature extraction
-- Baseline and transformer model development
-- Model evaluation
-- Flask backend
-- Frontend demo
+- Multi-class classification
+- Baseline comparison and transformer experiment
+- Evaluation with precision, recall, F1, and confusion matrix
+- Flask backend and browser frontend
 
-**Closing Line:**  
+**Closing line:**  
 RescueText PH helps turn noisy disaster posts into categorized, urgency-aware information that can support faster human response.
 
-## Slide 20: Q&A
+## Backup Slide: Technology Stack
 
-Possible questions to prepare for:
+**Frontend:** HTML, CSS, JavaScript  
+**Backend:** Python, Flask, Flask-CORS  
+**NLP and ML:** pandas, numpy, scikit-learn, NLTK, PyTorch, Hugging Face Transformers, Hugging Face Datasets
 
-1. Why did you choose this project?
-2. Why is NLP needed?
-3. Why did you simplify the labels?
-4. What is the difference between baseline and transformer?
-5. Why is urgency rule-based?
-6. How accurate is the system?
-7. What are the limitations?
-8. Can it handle Filipino or Taglish?
-9. Why not use GPT or an API?
-10. How can this be improved?
+## Backup Slide: Baseline Validation Comparison
 
-## Backup Slide: Why Not GPT?
-
-The project requirements prohibit third-party language models, classifiers, GPTs, and external APIs.
-
-Our system uses:
-
-- Locally trained baseline classifier
-- Locally fine-tuned transformer classifier
-- No external prediction API
+| Baseline Variant | Validation Macro F1 |
+|---|---:|
+| Word + character TF-IDF + LinearSVC | 0.7360 |
+| Word bigram TF-IDF + Logistic Regression | 0.7347 |
+| Word trigram TF-IDF + Logistic Regression | 0.7334 |
+| Word trigram TF-IDF + LinearSVC | 0.7294 |
 
 ## Backup Slide: Epochs and Steps
-
-In transformer training:
 
 - `sample-size 12000` means 12,000 total selected rows.
 - The data is split into train, validation, and test.

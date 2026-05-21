@@ -1,7 +1,7 @@
 """
 Train the RescueText PH baseline model.
 
-Model: TF-IDF features + Logistic Regression classifier.
+Model: tuned classical ML baselines using TF-IDF features.
 Dataset: dataset/processed/disaster_humanitarian_categories.csv.
 """
 
@@ -26,7 +26,8 @@ from sklearn.metrics import (
     recall_score,
 )
 from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
+from sklearn.pipeline import FeatureUnion, Pipeline
+from sklearn.svm import LinearSVC
 
 from disaster_config import (
     DATASET_PATH,
@@ -100,37 +101,155 @@ def split_dataset(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.Data
     return train.reset_index(drop=True), val.reset_index(drop=True), test.reset_index(drop=True)
 
 
-def train_model(texts: List[str], labels: np.ndarray) -> Pipeline:
-    pipeline = Pipeline(
-        [
-            (
-                "tfidf",
-                TfidfVectorizer(
-                    max_features=30000,
-                    ngram_range=(1, 2),
-                    min_df=2,
-                    max_df=0.9,
-                    sublinear_tf=True,
-                ),
+def model_candidates() -> list[tuple[str, Pipeline]]:
+    """Return classical baseline variants to compare on the validation split."""
+    return [
+        (
+            "tfidf_word_bigram_logreg",
+            Pipeline(
+                [
+                    (
+                        "tfidf",
+                        TfidfVectorizer(
+                            max_features=50000,
+                            ngram_range=(1, 2),
+                            min_df=2,
+                            max_df=0.92,
+                            sublinear_tf=True,
+                        ),
+                    ),
+                    (
+                        "classifier",
+                        LogisticRegression(
+                            max_iter=2000,
+                            class_weight="balanced",
+                            solver="saga",
+                            random_state=RANDOM_SEED,
+                        ),
+                    ),
+                ]
             ),
-            (
-                "classifier",
-                LogisticRegression(
-                    max_iter=1500,
-                    class_weight="balanced",
-                    solver="lbfgs",
-                    random_state=RANDOM_SEED,
-                ),
+        ),
+        (
+            "tfidf_word_trigram_logreg",
+            Pipeline(
+                [
+                    (
+                        "tfidf",
+                        TfidfVectorizer(
+                            max_features=80000,
+                            ngram_range=(1, 3),
+                            min_df=2,
+                            max_df=0.92,
+                            sublinear_tf=True,
+                        ),
+                    ),
+                    (
+                        "classifier",
+                        LogisticRegression(
+                            max_iter=2000,
+                            class_weight="balanced",
+                            solver="saga",
+                            random_state=RANDOM_SEED,
+                        ),
+                    ),
+                ]
             ),
-        ]
-    )
-    pipeline.fit(texts, labels)
-    return pipeline
+        ),
+        (
+            "tfidf_word_trigram_linearsvc",
+            Pipeline(
+                [
+                    (
+                        "tfidf",
+                        TfidfVectorizer(
+                            max_features=80000,
+                            ngram_range=(1, 3),
+                            min_df=2,
+                            max_df=0.92,
+                            sublinear_tf=True,
+                        ),
+                    ),
+                    (
+                        "classifier",
+                        LinearSVC(
+                            C=1.0,
+                            class_weight="balanced",
+                            dual="auto",
+                            random_state=RANDOM_SEED,
+                        ),
+                    ),
+                ]
+            ),
+        ),
+        (
+            "tfidf_word_char_linearsvc",
+            Pipeline(
+                [
+                    (
+                        "features",
+                        FeatureUnion(
+                            [
+                                (
+                                    "word",
+                                    TfidfVectorizer(
+                                        analyzer="word",
+                                        max_features=70000,
+                                        ngram_range=(1, 3),
+                                        min_df=2,
+                                        max_df=0.92,
+                                        sublinear_tf=True,
+                                    ),
+                                ),
+                                (
+                                    "char",
+                                    TfidfVectorizer(
+                                        analyzer="char_wb",
+                                        max_features=50000,
+                                        ngram_range=(3, 5),
+                                        min_df=2,
+                                        sublinear_tf=True,
+                                    ),
+                                ),
+                            ]
+                        ),
+                    ),
+                    (
+                        "classifier",
+                        LinearSVC(
+                            C=0.75,
+                            class_weight="balanced",
+                            dual="auto",
+                            random_state=RANDOM_SEED,
+                        ),
+                    ),
+                ]
+            ),
+        ),
+    ]
+
+
+def probability_like(model: Pipeline, texts: List[str]) -> np.ndarray:
+    if hasattr(model, "predict_proba"):
+        return model.predict_proba(texts)
+
+    if hasattr(model, "decision_function"):
+        scores = model.decision_function(texts)
+        if scores.ndim == 1:
+            scores = np.column_stack([-scores, scores])
+        scores = scores - scores.max(axis=1, keepdims=True)
+        exp_scores = np.exp(scores)
+        return exp_scores / exp_scores.sum(axis=1, keepdims=True)
+
+    predictions = model.predict(texts)
+    probabilities = np.zeros((len(predictions), len(FINAL_LABELS)), dtype=float)
+    probabilities[np.arange(len(predictions)), predictions] = 1.0
+    return probabilities
 
 
 def evaluate(model: Pipeline, texts: List[str], labels: np.ndarray) -> dict:
     predictions = model.predict(texts)
-    probabilities = model.predict_proba(texts)
+    probabilities = probability_like(model, texts)
     return {
         "accuracy": accuracy_score(labels, predictions),
         "precision_macro": precision_score(labels, predictions, average="macro", zero_division=0),
@@ -151,8 +270,10 @@ def evaluate(model: Pipeline, texts: List[str], labels: np.ndarray) -> dict:
 
 def write_outputs(
     model: Pipeline,
+    model_name: str,
     eval_result: dict,
     test_df: pd.DataFrame,
+    validation_results: list[dict],
     output_model: Path,
     output_dir: Path,
 ) -> None:
@@ -162,13 +283,18 @@ def write_outputs(
     joblib.dump(
         {
             "pipeline": model,
+            "model_name": model_name,
             "labels": FINAL_LABELS,
             "label_to_id": LABEL_TO_ID,
             "id_to_label": ID_TO_LABEL,
             "urgency_by_label": URGENCY_BY_FINAL_LABEL,
+            "validation_results": validation_results,
         },
         output_model,
     )
+
+    comparison_path = output_dir / "disaster_baseline_model_comparison.csv"
+    pd.DataFrame(validation_results).sort_values("f1_macro", ascending=False).to_csv(comparison_path, index=False)
 
     report_path = output_dir / "disaster_baseline_evaluation.txt"
     report_path.write_text(
@@ -176,10 +302,16 @@ def write_outputs(
             [
                 "RescueText PH Baseline Evaluation",
                 "=" * 40,
+                f"Selected model: {model_name}",
                 f"Accuracy: {eval_result['accuracy']:.4f}",
                 f"Precision macro: {eval_result['precision_macro']:.4f}",
                 f"Recall macro: {eval_result['recall_macro']:.4f}",
                 f"F1 macro: {eval_result['f1_macro']:.4f}",
+                "",
+                "Validation Model Comparison",
+                pd.DataFrame(validation_results)
+                .sort_values("f1_macro", ascending=False)
+                .to_string(index=False, float_format=lambda value: f"{value:.4f}"),
                 "",
                 "Classification Report",
                 eval_result["classification_report"],
@@ -248,18 +380,60 @@ def main() -> None:
     print(f"Loaded {len(df)} rows")
     print(df["final_label"].value_counts().to_string())
 
-    train_df, _, test_df = split_dataset(df)
-    print(f"Train: {len(train_df)} | Test: {len(test_df)}")
+    train_df, val_df, test_df = split_dataset(df)
+    print(f"Train: {len(train_df)} | Validation: {len(val_df)} | Test: {len(test_df)}")
 
     X_train = preprocess_texts(train_df["text"].tolist())
+    X_val = preprocess_texts(val_df["text"].tolist())
     X_test = preprocess_texts(test_df["text"].tolist())
     y_train = train_df["label"].to_numpy()
+    y_val = val_df["label"].to_numpy()
     y_test = test_df["label"].to_numpy()
 
-    model = train_model(X_train, y_train)
-    eval_result = evaluate(model, X_test, y_test)
+    best_name = ""
+    best_model: Pipeline | None = None
+    best_score = -1.0
+    validation_results = []
 
-    write_outputs(model, eval_result, test_df, Path(args.model_output), Path(args.output_dir))
+    for model_name, candidate in model_candidates():
+        print(f"\nTraining candidate: {model_name}")
+        candidate.fit(X_train, y_train)
+        val_result = evaluate(candidate, X_val, y_val)
+        row = {
+            "model_name": model_name,
+            "accuracy": val_result["accuracy"],
+            "precision_macro": val_result["precision_macro"],
+            "recall_macro": val_result["recall_macro"],
+            "f1_macro": val_result["f1_macro"],
+        }
+        validation_results.append(row)
+        print(
+            "Validation "
+            f"accuracy={row['accuracy']:.4f} "
+            f"precision={row['precision_macro']:.4f} "
+            f"recall={row['recall_macro']:.4f} "
+            f"f1={row['f1_macro']:.4f}"
+        )
+        if row["f1_macro"] > best_score:
+            best_name = model_name
+            best_model = candidate
+            best_score = row["f1_macro"]
+
+    if best_model is None:
+        raise RuntimeError("No baseline model candidates were trained.")
+
+    print(f"\nSelected baseline: {best_name} (validation macro F1={best_score:.4f})")
+    eval_result = evaluate(best_model, X_test, y_test)
+
+    write_outputs(
+        best_model,
+        best_name,
+        eval_result,
+        test_df,
+        validation_results,
+        Path(args.model_output),
+        Path(args.output_dir),
+    )
     print(f"Accuracy: {eval_result['accuracy']:.4f}")
     print(f"F1 macro: {eval_result['f1_macro']:.4f}")
     print(f"Saved model to {args.model_output}")

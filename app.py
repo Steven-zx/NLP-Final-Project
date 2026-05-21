@@ -189,11 +189,12 @@ class ModelManager:
 
         artifact = joblib.load(BASELINE_MODEL_PATH)
         pipeline = artifact["pipeline"] if isinstance(artifact, dict) and "pipeline" in artifact else artifact
+        model_name = artifact.get("model_name", "Tuned TF-IDF Baseline") if isinstance(artifact, dict) else "Tuned TF-IDF Baseline"
         self.models["baseline"] = pipeline
         self.model_info["baseline"] = {
-            "name": "TF-IDF + Logistic Regression",
+            "name": model_name,
             "type": "traditional_ml",
-            "description": "Classical baseline trained on disaster humanitarian categories",
+            "description": "Tuned classical TF-IDF baseline trained on disaster humanitarian categories",
             "status": "loaded",
             "inference_device": "cpu",
         }
@@ -288,11 +289,28 @@ class ModelManager:
             boosted = boosted / boosted.sum()
         return boosted
 
+    def _probability_like(self, pipeline: Any, texts: List[str]) -> np.ndarray:
+        if hasattr(pipeline, "predict_proba"):
+            return pipeline.predict_proba(texts)
+
+        if hasattr(pipeline, "decision_function"):
+            scores = pipeline.decision_function(texts)
+            if scores.ndim == 1:
+                scores = np.column_stack([-scores, scores])
+            scores = scores - scores.max(axis=1, keepdims=True)
+            exp_scores = np.exp(scores)
+            return exp_scores / exp_scores.sum(axis=1, keepdims=True)
+
+        predictions = pipeline.predict(texts)
+        probabilities = np.zeros((len(predictions), len(FINAL_LABELS)), dtype=float)
+        probabilities[np.arange(len(predictions)), predictions] = 1.0
+        return probabilities
+
     def predict_baseline(self, text: str) -> Dict[str, Any]:
         start = time.time()
         processed = self.preprocessor.get_tokens_as_string(text)
         pipeline = self.models["baseline"]
-        probabilities = pipeline.predict_proba([processed])[0]
+        probabilities = self._probability_like(pipeline, [processed])[0]
         probabilities = self._apply_keyword_boosts(text, probabilities)
         return self._format_prediction(text, "baseline", probabilities, (time.time() - start) * 1000)
 
