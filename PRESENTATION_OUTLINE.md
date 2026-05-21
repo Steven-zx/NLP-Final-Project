@@ -252,22 +252,22 @@ Explain that 12,000 rows are split into train, validation, and test. The 1,050 s
 
 ## Slide 13: Transformer Evaluation
 
-**Fill this after training finishes:**
+**Transformer Results:**
 
-- Accuracy: `_____`
-- Macro Precision: `_____`
-- Macro Recall: `_____`
-- Macro F1-score: `_____`
+- Accuracy: 0.6661
+- Macro Precision: 0.6600
+- Macro Recall: 0.6661
+- Macro F1-score: 0.6608
 
 **Comparison Table:**
 
 | Model | Accuracy | Macro Precision | Macro Recall | Macro F1 |
 |---|---:|---:|---:|---:|
 | TF-IDF + Logistic Regression | 0.7333 | 0.7336 | 0.7364 | 0.7332 |
-| Multilingual Transformer | TBD | TBD | TBD | TBD |
+| Multilingual Transformer | 0.6661 | 0.6600 | 0.6661 | 0.6608 |
 
 **Speaker Notes:**  
-Once training is finished, copy results from `outputs/disaster_transformer_evaluation.txt`.
+The baseline currently performs better on the balanced sample. Explain that the transformer is more advanced but was limited to one local CPU-friendly epoch, while the baseline is stable and effective for this dataset size.
 
 ## Slide 14: Error Analysis and Limitations
 

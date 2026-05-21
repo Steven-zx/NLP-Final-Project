@@ -82,12 +82,21 @@ Current baseline result using a balanced 40,000-row sample:
 - Macro Recall: 0.7364
 - Macro F1-score: 0.7332
 
+Current transformer result using a balanced 12,000-row sample for 1 epoch:
+
+- Accuracy: 0.6661
+- Macro Precision: 0.6600
+- Macro Recall: 0.6661
+- Macro F1-score: 0.6608
+
 Evaluation artifacts:
 
 - `models/disaster_baseline.pkl`
 - `outputs/disaster_baseline_evaluation.txt`
 - `outputs/disaster_baseline_predictions.csv`
 - `outputs/disaster_label_mapping.json`
+- `outputs/disaster_transformer_evaluation.txt`
+- `outputs/disaster_transformer_predictions.csv`
 - `outputs/disaster_confusion_matrix_NOTE.txt` unless matplotlib is installed
 
 The baseline is important for rubric compliance because it gives a clear comparison point before using the transformer model.
