@@ -1,6 +1,6 @@
 # Disaster Response Dataset Imports
 
-This project uses `scripts/import_disaster_datasets.py` to normalize crisis and disaster-response datasets for the RescueText PH idea.
+This project uses `scripts/import_disaster_datasets.py` to normalize crisis and disaster-response datasets for the TulongText PH idea.
 
 Run from the repository root:
 
@@ -61,7 +61,7 @@ The original `disaster_humanitarian_categories.csv` is kept unchanged for reprod
 
 ## Expansion Label Mapping
 
-Disaster Response Messages is mapped into the RescueText PH taxonomy using priority rules:
+Disaster Response Messages is mapped into the TulongText PH taxonomy using priority rules:
 
 - `search_and_rescue`, `request`, `missing_people` -> rescue or urgent needs
 - `medical_help`, `medical_products`, `hospitals`, `death` -> medical or casualties

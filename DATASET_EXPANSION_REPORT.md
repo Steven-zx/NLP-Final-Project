@@ -1,4 +1,4 @@
-# RescueText PH Dataset Expansion Report
+# TulongText PH Dataset Expansion Report
 
 ## What Was Added
 
@@ -21,7 +21,7 @@ New expanded files:
 - Humanitarian category rows: 225,568
 - Missing text values: 0
 - Missing category values: 0
-- Missing final label values after RescueText PH mapping: 0
+- Missing final label values after TulongText PH mapping: 0
 - Invalid final label values: 0
 - Exact normalized duplicate texts: 0
 

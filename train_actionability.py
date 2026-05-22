@@ -1,5 +1,5 @@
 """
-Train a binary actionability classifier for RescueText PH.
+Train a binary actionability classifier for TulongText PH.
 
 This secondary NLP task distinguishes posts that need response attention from
 general or non-humanitarian posts. It complements the harder 8-class category
@@ -261,7 +261,7 @@ def write_outputs(
     (output_dir / "actionability_evaluation.txt").write_text(
         "\n".join(
             [
-                "RescueText PH Actionability Evaluation",
+                "TulongText PH Actionability Evaluation",
                 "=" * 44,
                 f"Selected model: {model_name}",
                 f"Accuracy: {eval_result['accuracy']:.4f}",
@@ -292,7 +292,7 @@ def write_outputs(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train RescueText PH binary actionability model.")
+    parser = argparse.ArgumentParser(description="Train TulongText PH binary actionability model.")
     parser.add_argument("--dataset", default=DATASET_PATH)
     parser.add_argument("--sample-size", type=int, default=0)
     parser.add_argument("--model-output", default="models/actionability_baseline.pkl")

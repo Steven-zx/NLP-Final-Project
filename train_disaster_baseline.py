@@ -1,5 +1,5 @@
 """
-Train the RescueText PH baseline model.
+Train the TulongText PH baseline model.
 
 Model: tuned classical ML baselines using TF-IDF features.
 Dataset: dataset/processed/disaster_humanitarian_categories.csv.
@@ -408,7 +408,7 @@ def write_outputs(
     report_path.write_text(
         "\n".join(
             [
-                "RescueText PH Baseline Evaluation",
+                "TulongText PH Baseline Evaluation",
                 "=" * 40,
                 f"Selected model: {model_name}",
                 f"Accuracy: {eval_result['accuracy']:.4f}",
@@ -445,7 +445,7 @@ def write_outputs(
             display_labels=[LABEL_DISPLAY_NAMES[label] for label in FINAL_LABELS],
         )
         display.plot(ax=ax, xticks_rotation=45, cmap="Blues", colorbar=False)
-        ax.set_title("RescueText PH Baseline Confusion Matrix")
+        ax.set_title("TulongText PH Baseline Confusion Matrix")
         fig.tight_layout()
         fig.savefig(output_dir / "disaster_confusion_matrix.png", dpi=180)
         plt.close(fig)
@@ -482,7 +482,7 @@ def write_outputs(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train RescueText PH baseline model.")
+    parser = argparse.ArgumentParser(description="Train TulongText PH baseline model.")
     parser.add_argument("--dataset", default=DATASET_PATH)
     parser.add_argument("--sample-size", type=int, default=0, help="Optional balanced sample size for quick runs.")
     parser.add_argument("--model-output", default="models/disaster_baseline.pkl")

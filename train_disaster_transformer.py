@@ -1,5 +1,5 @@
 """
-Fine-tune the RescueText PH transformer classifier.
+Fine-tune the TulongText PH transformer classifier.
 
 This script uses a pretrained multilingual encoder with a locally trained
 classification head. It does not call any third-party prediction API.
@@ -162,7 +162,7 @@ def write_report(trainer: Trainer, test_dataset: DisasterTextDataset, test_df: p
     (output_dir / "disaster_transformer_evaluation.txt").write_text(
         "\n".join(
             [
-                "RescueText PH Transformer Evaluation",
+                "TulongText PH Transformer Evaluation",
                 "=" * 42,
                 f"Accuracy: {metrics['accuracy']:.4f}",
                 f"Precision macro: {metrics['precision_macro']:.4f}",
@@ -188,7 +188,7 @@ def write_report(trainer: Trainer, test_dataset: DisasterTextDataset, test_df: p
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Fine-tune RescueText PH transformer model.")
+    parser = argparse.ArgumentParser(description="Fine-tune TulongText PH transformer model.")
     parser.add_argument("--dataset", default=DATASET_PATH)
     parser.add_argument("--model-name", default="distilbert-base-multilingual-cased")
     parser.add_argument("--model-output", default="models/disaster_transformer")

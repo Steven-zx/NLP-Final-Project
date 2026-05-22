@@ -1,5 +1,5 @@
 """
-Enhanced Text Preprocessing Pipeline for RescueText PH
+Enhanced Text Preprocessing Pipeline for TulongText PH
 =====================================================
 
 This module provides a comprehensive text preprocessing pipeline designed for

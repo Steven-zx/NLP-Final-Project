@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RescueText PH</title>
+    <title>TulongText PH</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,239 +12,373 @@
         }
 
         :root {
-            --ink: #172026;
-            --muted: #5d6872;
-            --line: #d9e1e8;
-            --surface: #ffffff;
-            --soft: #f4f7f9;
-            --primary: #087f8c;
-            --primary-dark: #05626c;
-            --critical: #b42318;
-            --high: #c2410c;
-            --moderate: #9a6700;
-            --low: #16703c;
-            --shadow: 0 16px 40px rgba(20, 38, 48, 0.12);
+            --navy: #062A5E;
+            --navy-deep: #041D42;
+            --blue: #0F4CC9;
+            --red: #D91E36;
+            --soft-blue: #EEF5FF;
+            --white: #FFFFFF;
+            --text: #111827;
+            --muted: #6B7280;
+            --green: #168A45;
+            --orange: #F59E0B;
+            --line: #D7E3F5;
+            --panel: #F8FBFF;
+            --shadow: 0 10px 26px rgba(6, 42, 94, 0.14);
+            --shadow-soft: 0 8px 18px rgba(15, 76, 201, 0.09);
+            --radius: 8px;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
             min-height: 100vh;
             font-family: Arial, Helvetica, sans-serif;
-            color: var(--ink);
+            color: var(--text);
+            background: #FFFFFF;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        textarea,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.64;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            height: 66px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #DDE6F4;
+            box-shadow: 0 2px 10px rgba(6, 42, 94, 0.08);
+        }
+
+        .nav-inner {
+            width: min(1220px, calc(100% - 92px));
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 32px;
+        }
+
+        .nav-logo {
+            display: block;
+            width: 222px;
+            height: auto;
+        }
+
+        .nav-links {
+            height: 100%;
+            display: flex;
+            align-items: stretch;
+            gap: 28px;
+            color: #0C1A32;
+            font-size: 0.96rem;
+            font-weight: 700;
+        }
+
+        .nav-links a {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 4px;
+            transition: color 0.18s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--blue);
+        }
+
+        .nav-links a.active::after {
+            content: "";
+            position: absolute;
+            left: -9px;
+            right: -9px;
+            bottom: 0;
+            height: 4px;
+            border-radius: 4px 4px 0 0;
+            background: var(--blue);
+            box-shadow: 0 -1px 8px rgba(15, 76, 201, 0.34);
+        }
+
+        .hero {
+            height: 318px;
+            color: #FFFFFF;
             background:
-                linear-gradient(rgba(10, 31, 38, 0.74), rgba(10, 31, 38, 0.66)),
-                url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80");
+                linear-gradient(90deg, rgba(6, 42, 94, 0.98) 0%, rgba(6, 42, 94, 0.93) 42%, rgba(6, 42, 94, 0.84) 100%),
+                url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80");
             background-size: cover;
             background-position: center;
-            padding: 24px;
+            border-bottom: 4px solid #0B3D86;
+        }
+
+        .hero-inner {
+            width: min(1060px, calc(100% - 160px));
+            height: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 178px 1px minmax(0, 1fr);
+            align-items: center;
+            gap: 34px;
+            padding-bottom: 64px;
+        }
+
+        .hero-mark {
+            display: grid;
+            place-items: center;
+        }
+
+        .hero-mark img {
+            display: block;
+            width: 156px;
+            max-height: 172px;
+            object-fit: contain;
+            filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.28));
+        }
+
+        .hero-divider {
+            width: 1px;
+            height: 128px;
+            background: rgba(255, 255, 255, 0.38);
+        }
+
+        .hero-copy h1 {
+            max-width: 750px;
+            margin-bottom: 13px;
+            font-size: 2.5rem;
+            line-height: 1.14;
+            letter-spacing: 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-copy p {
+            max-width: 720px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.02rem;
+            line-height: 1.48;
         }
 
         .page {
-            width: min(1120px, 100%);
-            margin: 0 auto;
+            width: min(1060px, calc(100% - 160px));
+            margin: -56px auto 0;
+            position: relative;
+            z-index: 5;
         }
 
-        header {
-            color: white;
-            margin: 24px 0 20px;
-        }
-
-        header h1 {
-            font-size: clamp(2rem, 5vw, 4rem);
-            line-height: 1;
-            margin-bottom: 12px;
-        }
-
-        header p {
-            max-width: 760px;
-            font-size: 1.05rem;
-            line-height: 1.5;
-        }
-
-        main {
+        .analysis-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
-            gap: 18px;
-            align-items: start;
+            grid-template-columns: 0.78fr 1.06fr;
+            gap: 14px;
+            align-items: stretch;
         }
 
         .panel {
-            background: var(--surface);
-            border-radius: 8px;
+            background: var(--white);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
-            padding: 22px;
+        }
+
+        .analysis-card,
+        .result-container {
+            min-height: 286px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            height: 46px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0 15px;
+            color: var(--navy);
+            border-bottom: 1px solid var(--line);
+            background: #FFFFFF;
+        }
+
+        .card-icon {
+            width: 22px;
+            height: 22px;
+            display: inline-grid;
+            place-items: center;
+            border: 2px solid var(--blue);
+            border-radius: 5px;
+            color: var(--blue);
+            font-size: 0.78rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .icon-svg {
+            width: 1em;
+            height: 1em;
+            display: block;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .step-dot {
+            width: 20px;
+            height: 20px;
+            display: inline-grid;
+            place-items: center;
+            border-radius: 999px;
+            color: white;
+            background: var(--blue);
+            font-size: 0.76rem;
+            font-weight: 900;
+        }
+
+        .card-header h2,
+        .section-title h2 {
+            color: var(--navy);
+            font-size: 1rem;
+            font-weight: 900;
+            letter-spacing: 0;
+        }
+
+        .card-body {
+            padding: 12px 14px 14px;
         }
 
         label {
             display: block;
-            font-weight: 700;
-            margin-bottom: 8px;
+            color: #1F2A44;
+            font-size: 0.86rem;
+            font-weight: 800;
+            margin-bottom: 6px;
         }
 
         textarea,
         select {
             width: 100%;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            font: inherit;
-            color: var(--ink);
+            color: var(--text);
             background: white;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
         }
 
         textarea {
-            min-height: 190px;
-            padding: 14px;
+            height: 122px;
+            min-height: 122px;
+            padding: 13px;
             resize: vertical;
+            color: #334155;
+            font-size: 0.9rem;
             line-height: 1.5;
         }
 
+        textarea::placeholder {
+            color: #6B7280;
+        }
+
         select {
-            padding: 11px 12px;
+            min-height: 38px;
+            padding: 8px 11px;
+            color: #0F172A;
+            font-size: 0.88rem;
         }
 
         textarea:focus,
         select:focus {
-            outline: 3px solid rgba(8, 127, 140, 0.18);
-            border-color: var(--primary);
-        }
-
-        .field-row {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 14px;
-            margin: 16px 0;
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(15, 76, 201, 0.12);
         }
 
         .counter {
+            margin-top: 4px;
             color: var(--muted);
             text-align: right;
-            font-size: 0.84rem;
-            margin-top: 6px;
+            font-size: 0.72rem;
+        }
+
+        .input-controls {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: end;
+            margin-top: 7px;
         }
 
         .actions {
             display: flex;
-            gap: 10px;
-            margin-top: 16px;
+            align-items: end;
+            gap: 8px;
         }
 
-        button {
-            border: 0;
-            border-radius: 8px;
-            padding: 12px 14px;
-            font: inherit;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        button:disabled {
-            opacity: 0.58;
-            cursor: not-allowed;
+        .btn-primary,
+        .btn-secondary {
+            min-height: 39px;
+            border-radius: 6px;
+            padding: 9px 17px;
+            font-weight: 900;
+            white-space: nowrap;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
         }
 
         .btn-primary {
-            flex: 1;
             color: white;
-            background: var(--primary);
+            border: 1px solid #0D43B2;
+            background: linear-gradient(180deg, #1462E8 0%, var(--blue) 100%);
+            box-shadow: 0 7px 14px rgba(15, 76, 201, 0.28);
         }
 
         .btn-primary:hover:not(:disabled) {
-            background: var(--primary-dark);
+            transform: translateY(-1px);
+            background: linear-gradient(180deg, #0F59D9 0%, #0C42AF 100%);
         }
 
         .btn-secondary {
-            color: var(--ink);
-            background: var(--soft);
+            color: var(--navy);
+            background: #F4F8FF;
             border: 1px solid var(--line);
         }
 
-        .result-side {
-            position: sticky;
-            top: 18px;
-        }
-
-        .examples h2,
-        .result-side h2,
-        .category-guide h2 {
-            font-size: 1rem;
-            margin-bottom: 10px;
-        }
-
-        .example-list {
-            display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
-            gap: 8px;
-        }
-
-        .example-btn {
-            text-align: left;
-            line-height: 1.35;
-            background: var(--soft);
-            border: 1px solid var(--line);
-            color: var(--ink);
-            font-weight: 500;
-            min-height: 132px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            justify-content: flex-start;
-        }
-
-        .example-btn:hover {
-            border-color: var(--primary);
-        }
-
-        .example-btn span {
-            display: inline-flex;
-            width: fit-content;
-            max-width: 100%;
-            padding: 4px 7px;
-            border-radius: 999px;
-            background: rgba(8, 127, 140, 0.12);
-            color: var(--primary-dark);
-            font-size: 0.72rem;
-            font-weight: 700;
-        }
-
-        .example-btn strong {
-            font-size: 0.88rem;
-            font-weight: 600;
-        }
-
-        .loading {
+        .loading,
+        .error-message {
             display: none;
-            margin-top: 14px;
-            color: var(--muted);
-            font-weight: 700;
+            margin-top: 9px;
+            font-size: 0.86rem;
+            font-weight: 800;
         }
 
         .loading.active {
             display: block;
-        }
-
-        .error-message {
-            display: none;
-            margin-top: 14px;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #f0a6a0;
-            background: #fff0ee;
-            color: var(--critical);
-            font-weight: 700;
+            color: var(--blue);
         }
 
         .error-message.active {
             display: block;
-        }
-
-        .result-container {
-            display: block;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            background: var(--surface);
-            overflow: hidden;
-            min-height: 440px;
-            max-height: calc(100vh - 180px);
-            box-shadow: var(--shadow);
+            padding: 9px 10px;
+            color: var(--red);
+            background: #FFF1F3;
+            border: 1px solid #F8C6CE;
+            border-radius: 6px;
         }
 
         .result-container:not(.active) .result-filled {
@@ -256,354 +390,889 @@
         }
 
         .result-empty {
-            min-height: 440px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            min-height: 238px;
+            display: grid;
+            place-items: center;
             padding: 28px;
             color: var(--muted);
-            line-height: 1.5;
+            text-align: center;
+            line-height: 1.45;
+            background: #FFFFFF;
         }
 
         .result-empty strong {
             display: block;
-            color: var(--ink);
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-        }
-
-        .result-main {
-            padding: 18px;
-            color: white;
-            background: var(--low);
-        }
-
-        .urgency-critical .result-main {
-            background: var(--critical);
-        }
-
-        .urgency-high .result-main {
-            background: var(--high);
-        }
-
-        .urgency-moderate .result-main {
-            background: var(--moderate);
-        }
-
-        .result-main span {
-            display: block;
-            font-size: 0.82rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            opacity: 0.88;
-            margin-bottom: 6px;
-        }
-
-        .result-main strong {
-            display: block;
-            font-size: 1.65rem;
-            line-height: 1.1;
-            margin-bottom: 10px;
+            margin-bottom: 7px;
+            color: var(--navy);
+            font-size: 1.08rem;
         }
 
         .result-body {
-            padding: 18px;
-            max-height: calc(100vh - 322px);
-            overflow: auto;
+            padding: 12px 14px 14px;
         }
 
-        .metric-grid {
+        .result-summary {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .metric {
-            background: var(--soft);
-            border-radius: 8px;
+            grid-template-columns: 1.08fr 0.72fr 0.92fr;
+            gap: 8px;
             padding: 10px;
+            border: 1px solid var(--line);
+            border-radius: 6px 6px 0 0;
+            background: #FFFFFF;
         }
 
-        .metric span {
+        .result-stat {
+            min-width: 0;
+        }
+
+        .result-stat span,
+        .detail-item span,
+        .top-predictions h3 {
             display: block;
-            color: var(--muted);
-            font-size: 0.78rem;
-            margin-bottom: 4px;
+            margin-bottom: 7px;
+            color: #253044;
+            font-size: 0.74rem;
+            font-weight: 800;
         }
 
-        .metric strong {
+        .category-badge,
+        .urgency-badge {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            max-width: 100%;
+            border-radius: 6px;
+            line-height: 1.1;
+            font-weight: 900;
+        }
+
+        .category-badge {
+            color: #111827;
+            background: #F8FAFF;
+            border: 1px solid #E6ECF8;
+            padding: 9px 10px;
             font-size: 1rem;
+        }
+
+        .category-badge::before {
+            content: "!";
+            width: 25px;
+            height: 25px;
+            display: inline-grid;
+            place-items: center;
+            margin-right: 8px;
+            border-radius: 999px;
+            color: white;
+            background: var(--red);
+            font-size: 0.9rem;
+        }
+
+        .urgency-badge {
+            padding: 9px 14px;
+            color: #0F5B2A;
+            background: #E5F7EC;
+        }
+
+        .urgency-critical .urgency-badge {
+            color: var(--red);
+            background: #FFE8EC;
+        }
+
+        .urgency-high .urgency-badge {
+            color: #B9320C;
+            background: #FFE9DE;
+        }
+
+        .urgency-moderate .urgency-badge {
+            color: #7A4D00;
+            background: #FFF0C2;
+        }
+
+        .confidence-row {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .confidence-row strong {
+            color: var(--blue);
+            font-size: 1.28rem;
+            line-height: 1;
+        }
+
+        .progress-track {
+            height: 7px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #D9E5F8;
+        }
+
+        .progress-fill {
+            display: block;
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #0F4CC9, #1976FF);
+            transition: width 0.35s ease;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 0.55fr;
+            gap: 10px;
+            padding: 10px;
+            border-left: 1px solid var(--line);
+            border-right: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            background: #FFFFFF;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 10px;
+            border-left: 1px solid var(--line);
+            border-right: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            background: #FFFFFF;
+        }
+
+        .detail-item p {
+            color: #26324A;
+            font-size: 0.8rem;
+            line-height: 1.38;
+        }
+
+        .token-count {
+            display: inline-flex;
+            padding: 0;
+            border-radius: 0;
+            color: #111827;
+            background: transparent;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .top-predictions {
+            padding: 10px;
+            border-left: 1px solid var(--line);
+            border-right: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            border-radius: 0 0 6px 6px;
+            background: #FFFFFF;
         }
 
         .top-list {
             list-style: none;
             display: grid;
-            gap: 8px;
-            margin: 8px 0 18px;
-        }
-
-        .top-list li {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            background: var(--soft);
-            border-radius: 8px;
-            padding: 9px 10px;
-        }
-
-        .top-list li span {
-            min-width: 0;
-        }
-
-        .top-list li strong {
-            white-space: nowrap;
-        }
-
-        .preprocess {
-            display: grid;
-            gap: 8px;
-            color: var(--muted);
-            font-size: 0.92rem;
-            line-height: 1.45;
-        }
-
-        .preprocess strong {
-            color: var(--ink);
-        }
-
-        .lower-sections {
-            display: grid;
-            gap: 18px;
-            margin-top: 18px;
-        }
-
-        .category-grid {
-            display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: 10px;
         }
 
+        .top-list li {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 5px 7px;
+            align-items: center;
+        }
+
+        .top-name {
+            grid-column: 1 / -1;
+            color: #111827;
+            font-size: 0.68rem;
+            font-weight: 800;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .top-score {
+            color: #1F2937;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .top-bar {
+            height: 5px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #DDE5F2;
+        }
+
+        .top-bar span {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: var(--blue);
+        }
+
+        .top-list li:nth-child(1) .top-bar span {
+            background: var(--red);
+        }
+
+        .top-list li:nth-child(2) .top-bar span {
+            background: #F97316;
+        }
+
+        .top-list li:nth-child(3) .top-bar span {
+            background: #F2B400;
+        }
+
+        .top-list li:nth-child(4) .top-bar span {
+            background: var(--green);
+        }
+
+        .aux-details {
+            display: none;
+        }
+
+        .section {
+            margin-top: 13px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 0 0 9px;
+            color: var(--navy);
+        }
+
+        .section-title .card-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .example-list {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #E2EAF7;
+            border-radius: var(--radius);
+            background: #FFFFFF;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .example-btn {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 10px;
+            min-height: 64px;
+            padding: 9px 10px;
+            color: var(--text);
+            text-align: left;
+            background: linear-gradient(180deg, #FFFFFF 0%, #F5F9FF 100%);
+            border: 1px solid #E4ECF8;
+            border-radius: 7px;
+            box-shadow: 0 4px 11px rgba(6, 42, 94, 0.06);
+            transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .example-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(15, 76, 201, 0.45);
+            box-shadow: 0 10px 18px rgba(15, 76, 201, 0.12);
+        }
+
+        .example-icon,
+        .category-icon {
+            width: 34px;
+            height: 34px;
+            display: inline-grid;
+            place-items: center;
+            flex: 0 0 auto;
+            border-radius: 999px;
+            color: white;
+            background: var(--blue);
+            font-size: 0.82rem;
+            font-weight: 900;
+            box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+        }
+
+        .example-icon .icon-svg,
+        .category-icon .icon-svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .example-text {
+            min-width: 0;
+        }
+
+        .example-text span {
+            display: none;
+        }
+
+        .example-text strong {
+            display: -webkit-box;
+            color: #111827;
+            font-size: 0.72rem;
+            line-height: 1.28;
+            font-weight: 700;
+            overflow: hidden;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .example-arrow {
+            color: var(--blue);
+            font-size: 1.45rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .example-btn:nth-child(1) .example-icon {
+            background: var(--red);
+        }
+
+        .example-btn:nth-child(2) .example-icon {
+            background: #F97316;
+        }
+
+        .example-btn:nth-child(3) .example-icon {
+            background: var(--orange);
+        }
+
+        .example-btn:nth-child(4) .example-icon {
+            background: var(--green);
+        }
+
+        .example-btn:nth-child(5) .example-icon {
+            background: #6D5DD3;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(8, minmax(0, 1fr));
+            border: 1px solid #E2EAF7;
+            border-radius: var(--radius);
+            background: #FFFFFF;
+            box-shadow: 0 6px 18px rgba(6, 42, 94, 0.06);
+            overflow: hidden;
+        }
+
         .category-card {
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            background: var(--soft);
-            padding: 12px;
-            min-height: 96px;
+            min-height: 116px;
+            padding: 11px 10px;
+            background: #FFFFFF;
+            border-right: 1px solid #E8EEF8;
+            transition: background 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .category-card:last-child {
+            border-right: 0;
+        }
+
+        .category-card:hover {
+            background: #F8FBFF;
+            box-shadow: inset 0 3px 0 var(--blue);
+        }
+
+        .category-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 7px;
+            margin-bottom: 7px;
+        }
+
+        .category-card .category-icon {
+            width: 30px;
+            height: 30px;
+            font-size: 0.76rem;
         }
 
         .category-card strong {
             display: block;
+            min-height: 32px;
             margin-bottom: 6px;
-            font-size: 0.95rem;
+            color: #0F172A;
+            font-size: 0.78rem;
+            line-height: 1.15;
         }
 
-        .category-card span {
+        .urgency-pill {
             display: inline-flex;
-            padding: 3px 7px;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            padding: 4px 7px;
             border-radius: 999px;
             color: white;
-            font-size: 0.72rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            background: var(--low);
+            background: var(--green);
+            font-size: 0.62rem;
+            font-weight: 900;
+            white-space: nowrap;
         }
 
-        .category-card span.critical {
-            background: var(--critical);
+        .urgency-pill.critical {
+            background: var(--red);
         }
 
-        .category-card span.high {
-            background: var(--high);
+        .urgency-pill.high {
+            background: #F2B400;
+            color: #3B2B00;
         }
 
-        .category-card span.moderate {
-            background: var(--moderate);
+        .urgency-pill.moderate {
+            color: #5E3B00;
+            background: #FFD14D;
         }
 
         .category-card p {
-            color: var(--muted);
-            font-size: 0.86rem;
+            color: #4B5563;
+            font-size: 0.66rem;
             line-height: 1.35;
         }
 
-        @media (max-width: 860px) {
-            body {
-                padding: 14px;
+        .about-section {
+            display: none;
+        }
+
+        .footer {
+            margin-top: 12px;
+            color: rgba(255, 255, 255, 0.78);
+            background: var(--navy-deep);
+            border-top: 4px solid #062A5E;
+        }
+
+        .footer-inner {
+            width: min(1220px, calc(100% - 92px));
+            min-height: 62px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 240px 1fr 240px;
+            align-items: center;
+            gap: 28px;
+            padding: 8px 0;
+        }
+
+        .footer-logo {
+            width: 150px;
+            display: block;
+            padding: 3px 6px;
+            border-radius: 6px;
+            background: #FFFFFF;
+        }
+
+        .footer-copy {
+            color: rgba(255, 255, 255, 0.75);
+            text-align: center;
+            font-size: 0.78rem;
+        }
+
+        @media (max-width: 1180px) {
+            .nav-inner,
+            .page,
+            .footer-inner {
+                width: min(100% - 40px, 1060px);
             }
 
-            main {
-                grid-template-columns: 1fr;
+            .hero-inner {
+                width: min(100% - 40px, 1060px);
             }
 
-            .result-side {
-                position: static;
-            }
-
-            .result-container,
-            .result-empty {
-                min-height: 320px;
-                max-height: none;
-            }
-
-            .result-body {
-                max-height: none;
-            }
-
-            .metric-grid,
             .category-grid {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
             }
 
-            .example-list {
-                grid-template-columns: 1fr;
-            }
-
-            .actions {
-                flex-direction: column;
+            .category-card {
+                border-bottom: 1px solid #E8EEF8;
             }
         }
 
-        @media (max-width: 540px) {
-            .metric-grid,
+        @media (max-width: 980px) {
+            .hero {
+                height: auto;
+            }
+
+            .hero-inner {
+                min-height: 300px;
+                grid-template-columns: 130px 1px minmax(0, 1fr);
+                gap: 20px;
+                padding: 28px 0 84px;
+            }
+
+            .hero-mark img {
+                width: 120px;
+            }
+
+            .hero-copy h1 {
+                font-size: 2rem;
+            }
+
+            .page {
+                margin-top: -40px;
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .example-list {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .top-list {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .footer-inner {
+                grid-template-columns: 1fr;
+                justify-items: center;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .navbar {
+                height: auto;
+            }
+
+            .nav-inner {
+                width: min(100% - 24px, 1060px);
+                min-height: 72px;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: center;
+                gap: 4px;
+                padding: 10px 0 0;
+            }
+
+            .nav-logo {
+                width: 196px;
+            }
+
+            .nav-links {
+                width: 100%;
+                height: 42px;
+                gap: 18px;
+                overflow-x: auto;
+                font-size: 0.88rem;
+            }
+
+            .hero-inner,
+            .page,
+            .footer-inner {
+                width: min(100% - 24px, 1060px);
+            }
+
+            .hero-inner {
+                grid-template-columns: 1fr;
+                gap: 14px;
+                padding: 26px 0 84px;
+            }
+
+            .hero-divider {
+                display: none;
+            }
+
+            .hero-mark {
+                justify-content: start;
+            }
+
+            .hero-copy h1 {
+                font-size: 1.65rem;
+            }
+
+            .input-controls,
+            .result-summary,
+            .detail-grid,
+            .meta-grid,
+            .example-list,
             .category-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .category-card {
+                border-right: 0;
+                border-bottom: 1px solid #E8EEF8;
+            }
+
+            .actions {
+                justify-content: stretch;
+            }
+
+            .actions button {
+                flex: 1;
             }
         }
     </style>
 </head>
 <body>
-    <div class="page">
-        <header>
-            <h1>RescueText PH</h1>
-            <p>Filipino-English disaster relief post classification for humanitarian category detection and urgency triage.</p>
-            <div id="apiStatus" hidden></div>
-        </header>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <symbol id="icon-edit" viewBox="0 0 24 24">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z"></path>
+        </symbol>
+        <symbol id="icon-demo" viewBox="0 0 24 24">
+            <path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H20v17H7.5A3.5 3.5 0 0 0 4 22V5.5z"></path>
+            <path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H20"></path>
+            <path d="M8 6h8"></path>
+            <path d="M8 10h6"></path>
+        </symbol>
+        <symbol id="icon-grid" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+        </symbol>
+        <symbol id="icon-rescue" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9"></circle>
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 3v6"></path>
+            <path d="M12 15v6"></path>
+            <path d="M3 12h6"></path>
+            <path d="M15 12h6"></path>
+        </symbol>
+        <symbol id="icon-medical" viewBox="0 0 24 24">
+            <rect x="4" y="7" width="16" height="13" rx="2"></rect>
+            <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
+            <path d="M12 10v7"></path>
+            <path d="M8.5 13.5h7"></path>
+        </symbol>
+        <symbol id="icon-evacuation" viewBox="0 0 24 24">
+            <circle cx="13" cy="4" r="2"></circle>
+            <path d="M8 21l3-6"></path>
+            <path d="M16 21l-2.5-6"></path>
+            <path d="M6 11l5-3 4 2 3-2"></path>
+            <path d="M11 8l2.5 7"></path>
+            <path d="M3 17h5"></path>
+        </symbol>
+        <symbol id="icon-infrastructure" viewBox="0 0 24 24">
+            <path d="M3 11l9-7 9 7"></path>
+            <path d="M5 10v10h14V10"></path>
+            <path d="M9 20v-6h6v6"></path>
+            <path d="M3 21c2 0 2-1 4-1s2 1 4 1 2-1 4-1 2 1 4 1 2-1 4-1"></path>
+        </symbol>
+        <symbol id="icon-warning" viewBox="0 0 24 24">
+            <path d="M4 14h4l9 4V6L8 10H4v4z"></path>
+            <path d="M8 14l1.5 5"></path>
+            <path d="M20 9l2-1"></path>
+            <path d="M20 15l2 1"></path>
+        </symbol>
+        <symbol id="icon-donation" viewBox="0 0 24 24">
+            <path d="M20 10c0 5-8 10-8 10S4 15 4 10a4 4 0 0 1 7-2.6A4 4 0 0 1 20 10z"></path>
+            <path d="M12 11v5"></path>
+            <path d="M9.5 13.5h5"></path>
+        </symbol>
+        <symbol id="icon-info" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 11v6"></path>
+            <path d="M12 7h.01"></path>
+        </symbol>
+        <symbol id="icon-tag" viewBox="0 0 24 24">
+            <path d="M20 13l-7 7-9-9V4h7l9 9z"></path>
+            <path d="M7.5 7.5h.01"></path>
+            <path d="M15 9l-6 6"></path>
+            <path d="M9 9l6 6"></path>
+        </symbol>
+    </svg>
 
-        <main>
-            <section class="panel">
-                <label for="textInput">Disaster or social media post</label>
-                <textarea id="textInput" maxlength="5000" placeholder="Example: Need rescue sa Brgy. San Isidro, baha na hanggang bubong. May bata at senior na stranded."></textarea>
-                <div class="counter"><span id="charCount">0</span>/5000</div>
-
-                <div class="field-row">
-                    <div>
-                        <label for="modelSelect">Model</label>
-                        <select id="modelSelect">
-                            <option value="transformer">Transformer</option>
-                            <option value="baseline">Baseline TF-IDF</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div id="errorMessage" class="error-message"></div>
-                <div id="loading" class="loading">Analyzing post...</div>
-
-                <div class="actions">
-                    <button id="analyzeBtn" class="btn-primary" type="button">Analyze Post</button>
-                    <button id="clearBtn" class="btn-secondary" type="button">Clear</button>
-                </div>
-            </section>
-
-            <aside class="result-side">
-                <section id="resultContainer" class="result-container">
-                    <div class="result-empty">
-                        <strong>Prediction appears here</strong>
-                        <p>Enter a disaster post, choose a model, and run analysis to see the category, urgency, confidence, and preprocessing output.</p>
-                    </div>
-                    <div class="result-filled">
-                        <div class="result-main">
-                            <span>Predicted Category</span>
-                            <strong id="categoryText"></strong>
-                            <span>Urgency: <b id="urgencyText"></b></span>
-                        </div>
-                        <div class="result-body">
-                            <div class="metric-grid">
-                                <div class="metric">
-                                    <span>Confidence</span>
-                                    <strong id="confidenceScore"></strong>
-                                </div>
-                                <div class="metric">
-                                    <span>Model</span>
-                                    <strong id="modelUsed"></strong>
-                                </div>
-                                <div class="metric">
-                                    <span>Actionability</span>
-                                    <strong id="actionabilityText"></strong>
-                                </div>
-                                <div class="metric">
-                                    <span>Time</span>
-                                    <strong id="inferenceTime"></strong>
-                                </div>
-                            </div>
-
-                            <h2>Top Predictions</h2>
-                            <ul id="topPredictions" class="top-list"></ul>
-
-                            <h2>Preprocessing Preview</h2>
-                            <div class="preprocess">
-                                <p><strong>Cleaned text:</strong> <span id="cleanedText"></span></p>
-                                <p><strong>Final tokens:</strong> <span id="tokensText"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </aside>
-        </main>
-
-        <div class="lower-sections">
-            <section class="panel examples">
-                <h2>Demo Examples</h2>
-                <div id="examples" class="example-list"></div>
-            </section>
-
-            <section class="panel category-guide">
-                <h2>Prediction Categories</h2>
-                <div class="category-grid">
-                    <div class="category-card">
-                        <span class="critical">Critical</span>
-                        <strong>Rescue or Urgent Needs</strong>
-                        <p>Posts asking for rescue, urgent help, or stranded-person response.</p>
-                    </div>
-                    <div class="category-card">
-                        <span class="critical">Critical</span>
-                        <strong>Medical or Casualties</strong>
-                        <p>Injuries, deaths, missing people, medical support, or health concerns.</p>
-                    </div>
-                    <div class="category-card">
-                        <span class="high">High</span>
-                        <strong>Evacuation or Displacement</strong>
-                        <p>Evacuation centers, displaced residents, shelters, and relocation needs.</p>
-                    </div>
-                    <div class="category-card">
-                        <span class="high">High</span>
-                        <strong>Infrastructure Damage</strong>
-                        <p>Damaged roads, bridges, power lines, buildings, landslides, or utilities.</p>
-                    </div>
-                    <div class="category-card">
-                        <span class="moderate">Moderate</span>
-                        <strong>Warnings or Advice</strong>
-                        <p>Alerts, advisories, caution messages, and safety instructions.</p>
-                    </div>
-                    <div class="category-card">
-                        <span class="moderate">Moderate</span>
-                        <strong>Donation or Volunteering</strong>
-                        <p>Relief goods, donations, volunteer calls, supplies, food, or water offers.</p>
-                    </div>
-                    <div class="category-card">
-                        <span>Low</span>
-                        <strong>General Update</strong>
-                        <p>Relevant disaster updates, reactions, support, or non-urgent information.</p>
-                    </div>
-                    <div class="category-card">
-                        <span>Low</span>
-                        <strong>Not Humanitarian</strong>
-                        <p>Posts that are unrelated, promotional, commercial, or not useful for triage.</p>
-                    </div>
-                </div>
-            </section>
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a href="#home" aria-label="TulongText PH home">
+                <img class="nav-logo" src="assets/tulongTextLogo-transparent-cropped.png" alt="TulongText PH">
+            </a>
+            <div class="nav-links">
+                <a class="active" href="#home">Home</a>
+            </div>
         </div>
-    </div>
+    </nav>
+
+    <header id="home" class="hero">
+        <div class="hero-inner">
+            <div class="hero-mark">
+                <img src="assets/tulongTextMark-transparent.png" alt="TulongText PH mark">
+            </div>
+            <div class="hero-divider" aria-hidden="true"></div>
+            <div class="hero-copy">
+                <h1>Filipino-English Disaster Relief Post Classification for Humanitarian Triage</h1>
+                <p>AI-powered classification of social media and disaster posts to help responders prioritize urgent needs and deliver aid faster.</p>
+                <div id="apiStatus" hidden></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="page">
+        <section id="analyze" class="analysis-grid" aria-label="Post analysis">
+            <section class="panel analysis-card">
+                <div class="card-header">
+                    <span class="card-icon"><svg class="icon-svg"><use href="#icon-edit"></use></svg></span>
+                    <span class="step-dot">1</span>
+                    <h2>Enter Disaster or Social Media Post</h2>
+                </div>
+                <div class="card-body">
+                    <textarea id="textInput" maxlength="5000" aria-label="Disaster or social media post" placeholder="Type or paste a disaster or social media post here...
+
+Example: Need rescue sa Brgy. San Isidro, baha na hanggang bubong. May bata at senior na stranded."></textarea>
+                    <div class="counter"><span id="charCount">0</span>/5000</div>
+
+                    <div class="input-controls">
+                        <div>
+                            <label for="modelSelect">Model</label>
+                            <select id="modelSelect">
+                                <option value="transformer">tulongtext-ph-base (Recommended)</option>
+                                <option value="baseline">TF-IDF baseline</option>
+                            </select>
+                        </div>
+                        <div class="actions">
+                            <button id="analyzeBtn" class="btn-primary" type="button">Analyze</button>
+                            <button id="clearBtn" class="btn-secondary" type="button">Clear</button>
+                        </div>
+                    </div>
+
+                    <div id="errorMessage" class="error-message"></div>
+                    <div id="loading" class="loading">Analyzing post...</div>
+                </div>
+            </section>
+
+            <section id="resultContainer" class="panel result-container">
+                <div class="card-header">
+                    <span class="step-dot">2</span>
+                    <h2>Analysis Results</h2>
+                </div>
+
+                <div class="result-empty">
+                    <div>
+                        <strong>Prediction appears here</strong>
+                        <p>Run an analysis to view the category, urgency, confidence, cleaned text, and top predictions.</p>
+                    </div>
+                </div>
+
+                <div class="result-filled">
+                    <div class="result-body">
+                        <div class="result-summary">
+                            <div class="result-stat">
+                                <span>Predicted Category</span>
+                                <strong id="categoryText" class="category-badge"></strong>
+                            </div>
+                            <div class="result-stat">
+                                <span>Urgency Level</span>
+                                <strong id="urgencyText" class="urgency-badge"></strong>
+                            </div>
+                            <div class="result-stat">
+                                <span>Confidence Score</span>
+                                <div class="confidence-row">
+                                    <strong id="confidenceScore"></strong>
+                                    <div class="progress-track"><span id="confidenceBar" class="progress-fill"></span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span>Cleaned Text</span>
+                                <p id="cleanedText"></p>
+                            </div>
+                            <div class="detail-item">
+                                <span>Tokens</span>
+                                <p><strong id="tokenCount" class="token-count">0 tokens</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="top-predictions">
+                            <h3>Top Predictions</h3>
+                            <ul id="topPredictions" class="top-list"></ul>
+                        </div>
+
+                        <div class="meta-grid aux-details">
+                            <div class="detail-item">
+                                <span>Model</span>
+                                <p id="modelUsed"></p>
+                            </div>
+                            <div class="detail-item">
+                                <span>Actionability</span>
+                                <p id="actionabilityText"></p>
+                            </div>
+                            <div class="detail-item">
+                                <span>Final Tokens</span>
+                                <p id="tokensText"></p>
+                            </div>
+                            <div class="detail-item">
+                                <span>Inference Time</span>
+                                <p id="inferenceTime"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <section class="section examples" aria-label="Demo examples">
+            <div class="section-title">
+                <span class="card-icon"><svg class="icon-svg"><use href="#icon-demo"></use></svg></span>
+                <h2>Demo Examples</h2>
+            </div>
+            <div id="examples" class="example-list"></div>
+        </section>
+
+        <section id="categories" class="section category-guide" aria-label="Prediction categories">
+            <div class="section-title">
+                <span class="card-icon"><svg class="icon-svg"><use href="#icon-grid"></use></svg></span>
+                <h2>Prediction Categories</h2>
+            </div>
+            <div class="category-grid">
+                <article class="category-card">
+                    <div class="category-head"><span class="category-icon" style="background: var(--red);"><svg class="icon-svg"><use href="#icon-rescue"></use></svg></span><span class="urgency-pill critical">Critical</span></div>
+                    <strong>Rescue or Urgent Needs</strong>
+                    <p>Posts asking for rescue, urgent help, or stranded-person response.</p>
+                </article>
+                <article class="category-card">
+                    <div class="category-head"><span class="category-icon" style="background: #F97316;"><svg class="icon-svg"><use href="#icon-medical"></use></svg></span><span class="urgency-pill critical">Critical</span></div>
+                    <strong>Medical or Casualties</strong>
+                    <p>Injuries, deaths, missing people, medical support, or health concerns.</p>
+                </article>
+                <article class="category-card">
+                    <div class="category-head"><span class="category-icon" style="background: var(--orange);"><svg class="icon-svg"><use href="#icon-evacuation"></use></svg></span><span class="urgency-pill high">High</span></div>
+                    <strong>Evacuation or Displacement</strong>
+                    <p>Evacuation centers, displaced residents, shelters, and relocation needs.</p>
+                </article>
+                <article class="category-card">
+                    <div class="category-head"><span class="category-icon" style="background: var(--green);"><svg class="icon-svg"><use href="#icon-infrastructure"></use></svg></span><span class="urgency-pill high">High</span></div>
+                    <strong>Infrastructure Damage</strong>
+                    <p>Damaged roads, bridges, power lines, buildings, landslides, or utilities.</p>
+                </article>
+                <article class="category-card">
+                    <div class="category-head"><span class="category-icon" style="background: #F97316;"><svg class="icon-svg"><use href="#icon-warning"></use></svg></span><span class="urgency-pill moderate">Moderate</span></div>
+                    <strong>Warnings or Advice</strong>
+                    <p>Alerts, advisories, caution messages, and safety instructions.</p>
+                </article>
+                <article class="category-card">
+                    <div class="category-head"><span class="category-icon" style="background: #22A651;"><svg class="icon-svg"><use href="#icon-donation"></use></svg></span><span class="urgency-pill moderate">Moderate</span></div>
+                    <strong>Donation or Volunteering</strong>
+                    <p>Relief goods, donations, volunteer calls, supplies, food, or water offers.</p>
+                </article>
+                <article class="category-card">
+                    <div class="category-head"><span class="category-icon" style="background: #5B8DEF;"><svg class="icon-svg"><use href="#icon-info"></use></svg></span><span class="urgency-pill">Low</span></div>
+                    <strong>General Update</strong>
+                    <p>Relevant disaster updates, reactions, support, or non-urgent information.</p>
+                </article>
+                <article class="category-card">
+                    <div class="category-head"><span class="category-icon" style="background: #6D5DD3;"><svg class="icon-svg"><use href="#icon-tag"></use></svg></span><span class="urgency-pill">Low</span></div>
+                    <strong>Not Humanitarian</strong>
+                    <p>Posts that are unrelated, promotional, commercial, or not useful for triage.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <h2>About TulongText PH</h2>
+            <p>TulongText PH classifies Filipino-English disaster posts for humanitarian triage.</p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <img class="footer-logo" src="assets/tulongTextLogo-transparent-cropped.png" alt="TulongText PH">
+            <div class="footer-copy">&copy; 2026 TulongText PH Project</div>
+            <div aria-hidden="true"></div>
+        </div>
+    </footer>
 
     <script src="main.js"></script>
 </body>

@@ -1,4 +1,4 @@
-# RescueText PH PPT Outline
+# TulongText PH PPT Outline
 
 Target main presentation length: 5-10 minutes  
 Recommended main deck: 14 slides  
@@ -6,13 +6,13 @@ Backup slides: use only during Q&A
 
 ## Slide 1: Title
 
-**Title:** RescueText PH  
+**Title:** TulongText PH  
 **Subtitle:** Filipino-English Disaster Relief Post Classification and Urgency Triage System  
 **Course:** CCS 249 Final Project  
 **Group Members:** Add names here
 
 **Speaker Notes:**  
-Introduce RescueText PH as an NLP system that turns disaster-related posts into response categories and urgency levels.
+Introduce TulongText PH as an NLP system that turns disaster-related posts into response categories and urgency levels.
 
 ## Slide 2: Problem and Motivation
 
@@ -295,7 +295,7 @@ Use only 2-3 examples during the actual presentation to stay within time.
 
 ## Slide 14: Conclusion
 
-RescueText PH demonstrates a complete NLP pipeline:
+TulongText PH demonstrates a complete NLP pipeline:
 
 - Real-world disaster response problem
 - Multiple crisis datasets
@@ -306,7 +306,7 @@ RescueText PH demonstrates a complete NLP pipeline:
 - Flask backend and browser frontend
 
 **Closing line:**  
-RescueText PH helps turn noisy disaster posts into categorized, urgency-aware information that can support faster human response.
+TulongText PH helps turn noisy disaster posts into categorized, urgency-aware information that can support faster human response.
 
 ## Backup Slide: Technology Stack
 

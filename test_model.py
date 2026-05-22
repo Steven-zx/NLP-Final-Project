@@ -1,5 +1,5 @@
 """
-Dataset and label mapping checks for RescueText PH.
+Dataset and label mapping checks for TulongText PH.
 """
 
 import pandas as pd

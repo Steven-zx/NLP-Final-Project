@@ -1,4 +1,4 @@
-# RescueText PH - Python Dependencies
+# TulongText PH - Python Dependencies
 # ===================================
 # Packages for dataset processing, NLP preprocessing, model training,
 # evaluation, and the Flask demo API.

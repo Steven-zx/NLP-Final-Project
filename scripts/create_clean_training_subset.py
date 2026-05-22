@@ -1,5 +1,5 @@
 """
-Create a cleaner RescueText PH training subset.
+Create a cleaner TulongText PH training subset.
 
 The output keeps the original processed dataset intact and writes a separate
 CSV with stricter labels, duplicate removal, and low-information text filters.
@@ -193,7 +193,7 @@ def build_subset(input_path: Path, output_path: Path, summary_path: Path, min_to
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Create a cleaner RescueText PH training subset.")
+    parser = argparse.ArgumentParser(description="Create a cleaner TulongText PH training subset.")
     parser.add_argument("--input", default="dataset/processed/disaster_humanitarian_categories.csv")
     parser.add_argument("--output", default="dataset/processed/clean_training_subset.csv")
     parser.add_argument("--summary-output", default="dataset/processed/clean_training_subset_summary.json")

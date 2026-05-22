@@ -1,8 +1,8 @@
-# RescueText PH
+# TulongText PH
 
 Filipino-English disaster relief post classification and urgency triage system for CCS 249.
 
-RescueText PH accepts a disaster-related social media post, classifies it into a humanitarian response category, derives an urgency level, and displays confidence, top predictions, and preprocessing details.
+TulongText PH accepts a disaster-related social media post, classifies it into a humanitarian response category, derives an urgency level, and displays confidence, top predictions, and preprocessing details.
 It also includes a secondary binary actionability classifier that estimates whether a post is actionable for disaster triage.
 
 ## Project Fit

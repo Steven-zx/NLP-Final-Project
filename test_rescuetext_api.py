@@ -1,5 +1,5 @@
 """
-API route smoke tests for RescueText PH.
+API route smoke tests for TulongText PH.
 """
 
 import app as rescue_app

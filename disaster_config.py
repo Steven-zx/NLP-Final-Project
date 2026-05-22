@@ -1,5 +1,5 @@
 """
-Shared RescueText PH labels, urgency mapping, and dataset helpers.
+Shared TulongText PH labels, urgency mapping, and dataset helpers.
 """
 
 from __future__ import annotations
@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import Dict
 
 
-APP_NAME = "RescueText PH"
+APP_NAME = "TulongText PH"
 DATASET_PATH = "dataset/processed/disaster_humanitarian_categories.csv"
 
 FINAL_LABELS = [

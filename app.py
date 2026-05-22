@@ -1,5 +1,5 @@
 """
-RescueText PH Flask API.
+TulongText PH Flask API.
 
 Classifies disaster-related social media posts into humanitarian response
 categories and derives an urgency level from the predicted category.
@@ -139,7 +139,7 @@ KEYWORD_BOOST_WEIGHTS = {
 
 
 def setup_logging() -> logging.Logger:
-    logger = logging.getLogger("RescueTextPH")
+    logger = logging.getLogger("TULONGTEXTPH")
     logger.setLevel(logging.INFO)
     if logger.handlers:
         return logger
@@ -522,7 +522,7 @@ def run_server(host: str = FLASK_HOST, port: int = FLASK_PORT, debug: bool = FLA
 
     model_manager = ModelManager()
     if not model_manager.models:
-        print("No RescueText PH models found. Train a model before starting the API.")
+        print("No TulongText PH models found. Train a model before starting the API.")
         print("Example: python train_disaster_baseline.py --sample-size 40000")
         sys.exit(1)
 

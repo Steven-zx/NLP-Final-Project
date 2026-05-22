@@ -1,10 +1,10 @@
-# RescueText PH Software Documentation
+# TulongText PH Software Documentation
 
 ## Overview and Introduction
 
-**App Name:** RescueText PH
+**App Name:** TulongText PH
 
-**Purpose:** RescueText PH is a Filipino-English NLP system that classifies disaster-related social media posts into humanitarian response categories and assigns an urgency level. It is designed for scenarios where LGUs, responders, volunteers, or social media monitoring teams need to quickly sort noisy public posts during typhoons, floods, earthquakes, and other crises.
+**Purpose:** TulongText PH is a Filipino-English NLP system that classifies disaster-related social media posts into humanitarian response categories and assigns an urgency level. It is designed for scenarios where LGUs, responders, volunteers, or social media monitoring teams need to quickly sort noisy public posts during typhoons, floods, earthquakes, and other crises.
 
 **Target Users:** Disaster responders, local government units, volunteer coordinators, student emergency monitoring teams, and researchers studying crisis informatics.
 

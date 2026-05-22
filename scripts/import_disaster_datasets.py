@@ -1,5 +1,5 @@
 """
-Import and normalize disaster-response NLP datasets for RescueText PH.
+Import and normalize disaster-response NLP datasets for TulongText PH.
 
 Outputs are written to dataset/processed by default:
   - disaster_posts_master.csv.gz: all imported rows with a task column
@@ -501,7 +501,7 @@ def parse_languages(value: str) -> set[str] | None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Import disaster NLP datasets for RescueText PH.")
+    parser = argparse.ArgumentParser(description="Import disaster NLP datasets for TulongText PH.")
     parser.add_argument("--output-dir", default="dataset/processed", help="Directory for normalized CSV outputs.")
     parser.add_argument("--crisislex-dir", default="dataset/CrisisLexT26", help="Path to local CrisisLexT26 folder.")
     parser.add_argument(

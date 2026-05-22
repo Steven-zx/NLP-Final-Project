@@ -1,4 +1,4 @@
-RescueText PH Baseline Evaluation
+TulongText PH Baseline Evaluation
 ========================================
 Selected model: tfidf_word_bigram_logreg
 Accuracy: 0.7197

@@ -1,5 +1,5 @@
 /**
- * RescueText PH frontend logic.
+ * TulongText PH frontend logic.
  */
 
 const CONFIG = {
@@ -12,23 +12,28 @@ const CONFIG = {
 const EXAMPLES = [
     {
         text: 'Need rescue sa Brgy. San Isidro, baha na hanggang bubong. May bata at senior na stranded.',
-        category: 'Rescue or Urgent Needs'
+        category: 'Rescue or Urgent Needs',
+        icon: 'icon-rescue'
     },
     {
         text: 'Two injured residents near the collapsed bridge need medical assistance immediately.',
-        category: 'Medical or Casualties'
+        category: 'Medical or Casualties',
+        icon: 'icon-medical'
     },
     {
         text: 'Evacuation center at City High School is open. Bring water, IDs, and blankets.',
-        category: 'Evacuation or Displacement'
+        category: 'Evacuation or Displacement',
+        icon: 'icon-evacuation'
     },
     {
         text: 'Power lines are down along Mabini Street after the typhoon. Avoid the area.',
-        category: 'Infrastructure Damage'
+        category: 'Infrastructure Damage',
+        icon: 'icon-infrastructure'
     },
     {
         text: 'Selling raincoats and flashlights at discounted prices today only.',
-        category: 'Not Humanitarian'
+        category: 'Not Humanitarian',
+        icon: 'icon-tag'
     }
 ];
 
@@ -71,17 +76,26 @@ function setupExamples() {
     const container = document.getElementById('examples');
     container.innerHTML = EXAMPLES.map((example, index) => (
         `<button type="button" class="example-btn" data-index="${index}">
-            <span>${escapeHtml(example.category)}</span>
-            <strong>${escapeHtml(example.text)}</strong>
+            <span class="example-icon"><svg class="icon-svg"><use href="#${escapeHtml(example.icon)}"></use></svg></span>
+            <span class="example-text">
+                <span>${escapeHtml(example.category)}</span>
+                <strong>${escapeHtml(example.text)}</strong>
+            </span>
+            <span class="example-arrow">&rsaquo;</span>
         </button>`
     )).join('');
 
     container.querySelectorAll('button').forEach((button) => {
         button.addEventListener('click', () => {
             const text = EXAMPLES[Number(button.dataset.index)].text;
-            document.getElementById('textInput').value = text;
+            const textInput = document.getElementById('textInput');
+            textInput.value = text;
             updateCharCounter(text.length);
             clearResults();
+            const analysisSection = document.getElementById('analyze');
+            const targetTop = analysisSection.getBoundingClientRect().top + window.scrollY - 280;
+            window.scrollTo({top: Math.max(0, targetTop), behavior: 'smooth'});
+            window.setTimeout(() => textInput.focus(), 450);
         });
     });
 }
@@ -181,11 +195,13 @@ async function predictText(text, model) {
 function displayResult(result) {
     const container = document.getElementById('resultContainer');
     const urgency = result.urgency || 'low';
-    container.className = `result-container active urgency-${urgency}`;
+    container.className = `panel result-container active urgency-${urgency}`;
 
     document.getElementById('categoryText').textContent = result.category_display || formatLabel(result.category);
     document.getElementById('urgencyText').textContent = result.urgency_display || formatLabel(urgency);
-    document.getElementById('confidenceScore').textContent = `${(result.confidence * 100).toFixed(1)}%`;
+    const confidence = Number(result.confidence || 0);
+    document.getElementById('confidenceScore').textContent = `${(confidence * 100).toFixed(1)}%`;
+    document.getElementById('confidenceBar').style.width = `${Math.max(0, Math.min(100, confidence * 100)).toFixed(1)}%`;
     document.getElementById('modelUsed').textContent = formatLabel(result.model);
     const actionability = result.actionability || {};
     const actionabilityConfidence = typeof actionability.confidence === 'number'
@@ -194,14 +210,23 @@ function displayResult(result) {
     document.getElementById('actionabilityText').textContent = `${actionability.display_name || 'Pending'}${actionabilityConfidence}`;
     document.getElementById('inferenceTime').textContent = `${result.inference_time_ms.toFixed(2)} ms`;
 
-    const topList = document.getElementById('topPredictions');
-    topList.innerHTML = (result.top_predictions || []).map((item) => (
-        `<li><span>${escapeHtml(item.display_name || formatLabel(item.category))}</span><strong>${(item.confidence * 100).toFixed(1)}%</strong></li>`
-    )).join('');
-
     const preprocessing = result.preprocessing || {};
     document.getElementById('cleanedText').textContent = preprocessing.cleaned_text || '';
-    document.getElementById('tokensText').textContent = (preprocessing.tokens || []).join(', ');
+    const tokens = preprocessing.tokens || [];
+    const tokenCount = preprocessing.token_count || tokens.length || 0;
+    document.getElementById('tokenCount').textContent = `${tokenCount} token${tokenCount === 1 ? '' : 's'}`;
+    document.getElementById('tokensText').textContent = tokens.join(', ');
+
+    const topList = document.getElementById('topPredictions');
+    topList.innerHTML = (result.top_predictions || []).map((item, index) => {
+        const score = Number(item.confidence || 0);
+        const width = Math.max(0, Math.min(100, score * 100)).toFixed(1);
+        return `<li>
+            <span class="top-name">${index + 1}. ${escapeHtml(item.display_name || formatLabel(item.category))}</span>
+            <span class="top-bar"><span style="width: ${width}%"></span></span>
+            <span class="top-score">${width}%</span>
+        </li>`;
+    }).join('');
 
     container.scrollIntoView({behavior: 'smooth', block: 'nearest'});
 }
@@ -223,7 +248,7 @@ function clearForm() {
 }
 
 function clearResults() {
-    document.getElementById('resultContainer').className = 'result-container';
+    document.getElementById('resultContainer').className = 'panel result-container';
     clearError();
 }
 
@@ -243,7 +268,7 @@ function updateCharCounter(count) {
 
 function savePreferences() {
     try {
-        localStorage.setItem('rescuetext_preferences', JSON.stringify({
+        localStorage.setItem('TULONGTEXT_preferences', JSON.stringify({
             model: document.getElementById('modelSelect').value
         }));
     } catch (error) {
@@ -253,7 +278,7 @@ function savePreferences() {
 
 function loadPreferences() {
     try {
-        const stored = JSON.parse(localStorage.getItem('rescuetext_preferences') || '{}');
+        const stored = JSON.parse(localStorage.getItem('TULONGTEXT_preferences') || '{}');
         if (stored.model) {
             document.getElementById('modelSelect').value = stored.model;
         }

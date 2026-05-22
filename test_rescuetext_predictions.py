@@ -1,5 +1,5 @@
 """
-Smoke tests for RescueText PH disaster triage predictions.
+Smoke tests for TulongText PH disaster triage predictions.
 """
 
 from app import ModelManager
