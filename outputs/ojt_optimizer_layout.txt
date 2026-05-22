@@ -1,0 +1,404 @@
+OJT Optimizer: A Data-Driven Approach to OJT Selection
+
+
+
+          CCS 224 - Algorithms and Complexity
+
+                      Final Project
+
+
+
+                      Submitted by:​
+
+                   Baladjay, Aser Jr. S.
+
+                    Canabo, Shane D.
+
+                Dorado, Louise Marielle V.
+
+                 Pontillas, Steven Ken E.
+
+                    Villarin, Athena S.
+
+                      BSCS 2A AI
+
+
+
+
+                      Submitted to:​
+
+                  Sabayle, Ma. Luche P.
+
+                  CCS 224 - Instructor
+
+
+
+
+                     April 28, 2025
+​
+
+Project Overview
+
+
+Introduction to the Project
+
+
+On-the-Job Training (OJT) is one of the most important developmental opportunities for students
+
+transitioning from university to the professional world. However, selecting the right OJT
+
+placement is often a difficult and overwhelming process. Students must balance multiple factors
+
+such as allowance, company reputation, skills match, location, and personal career goals, all
+
+while facing time pressure and limited guidance.
+
+
+This project, OJT Optimizer, aims to assist students in making smarter and faster OJT decisions.
+
+By allowing users to input and prioritize their preferences and by processing these through
+
+mathematical algorithms, the system generates a ranked list of OJT placements based on a
+
+calculated overall fit.
+
+
+The main goal of the project is to provide a tool that eliminates guesswork and bias from the
+
+decision-making process, offering a data-driven, personalized recommendation to students. In
+
+doing so, this project hopes to reduce the stress and uncertainty that often accompany OJT
+
+placement and help students maximize their early career opportunities.
+
+
+Problem Statement
+
+
+Choosing the right internship is a critical step for college students preparing for real-world
+
+careers. However, many students struggle to objectively compare internship offers that vary
+across different factors such as distance, allowance, skills match, or company reputation, often
+
+leading to choices based on incomplete information or personal bias. Internships or on-the-job
+
+training (OJT) are mandatory for graduation under several academic programs, as stated in the
+
+Commission on Higher Education (CHED) Memorandum Order No. 104, Series of 2017. This
+
+requirement makes it even more important for students to carefully select internship placements
+
+that align with their career goals and personal priorities. Without a structured, objective method
+
+to evaluate multiple internship offers, students risk choosing suboptimal opportunities that may
+
+not maximize their skills, experience, or future employment potential. This project addresses
+
+this problem by using mathematical algorithms to systematically rank internship options based
+
+on user-defined criteria, helping students make more informed and confident decisions.
+
+
+Significance in Algorithms and Complexity
+
+The OJT Optimizer is significant in the field of algorithms and complexity because it
+
+demonstrates how mathematical methods can be used to solve real-world decision-making
+
+problems that involve multiple factors and constraints. Rather than relying on subjective or
+
+manual selection processes, this system applies linear algebra algorithms to compute optimal
+
+rankings efficiently and objectively.
+
+
+Specifically, the system will use algorithms like Gaussian Elimination to combine weighted
+
+factors to calculate a score for each internship, QR Decomposition for normalising factors to
+
+prevent bias from one factor (like salary) dominating others unfairly, and Cramer's Rule to solve
+
+ranking priorities if the user sets very specific “must-have” constraints (like "must be remote").
+
+These algorithms not only reduce the time complexity compared to brute-force or manual
+ranking but also ensure that the results are mathematically consistent and scalable even if the
+
+number of internships grows.
+
+
+Algorithm Selection
+
+
+After thorough research, these three algorithms were selected for this project: Gaussian
+
+Elimination, QR Decomposition, and Cramer's Rule.
+
+
+1.​Gaussian Elimination
+
+       Gaussian Elimination is classified as a system of linear equations solver. It operates by
+
+applying a series of row operations to convert the original system into an upper triangular form,
+
+where all elements below the main diagonal are zero. Once the system is in this form, it can be
+
+solved easily through back-substitution, starting from the last equation and working upward. In
+
+the context of this project, Gaussian Elimination plays a critical role in solving the system of
+
+weighted criteria scores assigned to each internship option, thereby producing the initial ranked
+
+list that reflects the student’s stated preferences. In the OJT Optimizer, Gaussian Elimination is
+
+used primarily during the initial ranking process. When a user inputs their prioritized criteria and
+
+internship options, the system constructs a weighted matrix representing the relationships
+
+between the internships and the criteria. Gaussian Elimination then solves this system to
+
+determine the best overall ranking based on the calculated scores. This method ensures that the
+
+final ranking is mathematically consistent with the user’s preferences.
+By applying Gaussian Elimination, it can systematically compute the rankings of internships
+
+based on the users’ preferences, ensuring the results are accurate and consistent without the need
+
+for manual calculation.
+
+
+2.​ QR Decomposition
+
+QR Decomposition is a matrix factorization algorithm that decomposes a given matrix into two
+
+matrices: an orthogonal matrix (Q) and an upper triangular matrix (R). This decomposition is
+
+beneficial when solving linear systems, especially when numerical stability and orthogonality are
+
+important. In this project, QR Decomposition is vital during the preprocessing stage. Since
+
+internship evaluation factors such as allowance, distance, and reputation may have vastly
+
+different units or ranges, QR Decomposition allows data normalization so that all factors
+
+contribute fairly to the final ranking without being disproportionately influenced by their
+
+magnitude.
+
+
+QR Decomposition is used to preprocess the input matrices. Since different criteria may be
+
+measured in different units (for instance, allowance in pesos and distance in kilometers), direct
+
+comparison without normalization would lead to biased results. QR Decomposition allows
+
+standardization of these different scales so that no single criterion unfairly dominates the scoring
+
+process. This preprocessing step is crucial in maintaining the fairness and integrity of the final
+
+ranking output. QR Decomposition is widely used in areas like numerical analysis, data science,
+
+and machine learning, especially for solving least squares problems where an exact solution is
+
+hard to find. It helps standardize and normalize different types of data so they can be fairly
+
+compared. In the OJT Optimizer, QR Decomposition is important because the chosen
+ criteria—such as company reputation or distance—may have different scales. QR Decomposition
+
+ helps adjust these differences, allowing the system to fairly combine and compare all factors to
+
+ generate a balanced and meaningful ranking for students.
+
+
+3.​Cramer’s Rule
+
+ Cramer's Rule is another algorithm for solving systems of linear equations, but it takes a different
+
+ approach by using determinants. Specifically, it solves for each variable by replacing one column
+
+ of the coefficient matrix with the result vector and computing the ratio of two determinants.
+
+ While Cramer's Rule is computationally expensive for very large systems, it is highly effective
+
+ and quick for small systems or when only one part of the system changes. Therefore, in this
+
+ project, Cramer's Rule is applied when users modify their input after the initial ranking
+
+ generation. Rather than recomputing the entire system using Gaussian Elimination, which could
+
+ be time-consuming, Cramer's Rule allows the system to quickly update the rankings by focusing
+
+ only on the changed parts, thus offering a better user experience through faster response times.
+
+ Cramer's Rule is incorporated to handle dynamic interactions after the initial ranking. If a student
+
+ wishes to adjust their priorities, for example, increasing the weight of "skills match" over
+
+ "allowance", or add a new internship option, Cramer's Rule provides a fast recalculation method.
+
+ Instead of repeating the entire Gaussian Elimination process, which could slow down the system,
+
+ Cramer's Rule updates only the necessary parts, resulting in real-time responsiveness without
+
+ sacrificing accuracy. This makes this system not only accurate but also user-friendly and
+
+ adaptable to changing preferences.
+Algorithm Comparison
+
+Strengths and Weaknesses
+
+   ●​ Gaussian Elimination:
+        ○​ Strengths:
+
+              ■​ Efficiently solves systems of linear equations by systematically reducing
+                 them to an upper triangular form, enabling straightforward solutions
+                 through back-substitution.
+              ■​ Provides a structured and well-established method for finding solutions,
+                 widely applicable in various fields like engineering, physics, and
+                 economics.
+              ■​ Plays a critical role in the OJT Optimizer by determining the initial ranked
+                 list of internship options based on weighted criteria scores.
+         ○​ Weaknesses:
+
+              ■​ It can become computationally intensive for very large systems of
+                 equations, potentially increasing processing time.
+   ●​ QR Decomposition:
+
+         ○​ Strengths:
+
+              ■​ Offers numerical stability and orthogonality, which are important for
+                 solving linear systems and ensuring accurate results.
+              ■​ Effectively normalizes data from different sources or scales, allowing for
+                 uniform processing and fair comparison of internship evaluation factors.
+              ■​ Vital in the preprocessing stage of the project to prevent bias from factors
+                 with larger magnitudes, such as allowance, from disproportionately
+                 influencing the final ranking.
+         ○​ Weaknesses:
+
+               ■​ Involves matrix factorization, which can be more complex to implement
+                  compared to Gaussian Elimination.
+   ●​ Cramer's Rule:
+
+         ○​ Strengths:
+
+                ■​ Provides a quick and effective solution for small systems of linear
+                   equations.
+               ■​ It is highly efficient for updating solutions when only a part of the system
+                  changes, making it suitable for dynamic user interactions.
+               ■​ Applied in the project to handle user modifications after the initial
+                  ranking, such as adjusting priorities or adding new internship options,
+                  ensuring real-time responsiveness.
+          ○​ Weaknesses:
+
+                 ■​ Becomes computationally expensive for very large systems, limiting its
+                    practicality in such cases.
+                 ■​ Less efficient than Gaussian Elimination for solving large systems from
+                    scratch.
+
+2. Criteria for Comparison
+
+   ●​ Efficiency:
+          ○​ Gaussian Elimination is efficient for solving systems of equations, particularly in
+             the initial ranking process, providing a structured approach to obtain solutions.
+          ○​ QR Decomposition is efficient in the preprocessing stage. It ensures fair
+             comparisons by normalizing data with different units or scales.
+          ○​ Cramer's Rule offers efficiency for dynamic updates, allowing quick
+             recalculations when user preferences or internship options change, enhancing user
+             experience.
+   ●​ Complexity:
+
+         ○​ Gaussian Elimination's computational complexity varies with the size of the
+             system of equations.
+         ○​ QR Decomposition involves matrix factorization, adding to its computational
+             complexity.
+         ○​ Cramer's Rule's complexity increases significantly with the size of the system due
+             to the computation of determinants.
+   ●​ Suitability:
+
+          ○​ Gaussian Elimination is best suited for the initial ranking of internships,
+             effectively processing weighted criteria to generate a base ranking.
+          ○​ QR Decomposition is ideal for preprocessing input matrices, normalizing data to
+             ensure fair weighting of different criteria like allowance and distance.
+          ○​ Cramer's Rule is most suitable for dynamically updating rankings, providing
+             quick adjustments when users modify their preferences or add new internship
+             options.
+Why was LU Decomposition not chosen?​
+
+Both LU decomposition and Gaussian elimination are fundamental for solving linear equations,
+
+with Gaussian elimination effectively performing LU decomposition; the choice depends on
+
+application, and Gaussian elimination's directness may be preferred for initial solutions. QR
+
+decomposition, preferred for numerical stability and normalization via orthogonalization, is
+
+crucial for handling diverse criteria in the Internship Position Ranker, unlike LU decomposition,
+
+which focuses on solving linear systems. While Cramer's rule uses determinants to directly solve
+
+linear systems, it's inefficient for large matrices; LU decomposition is generally more efficient,
+
+but the project uses Cramer's rule for efficient ranking updates, where recalculating with LU
+
+decomposition would be less efficient.
+
+
+Hardware Requirements
+
+Processor: 1.0 GHz dual-core processor - The planned algorithm is light and does not require
+significant computational resources; therefore, a low-powered CPU is sufficient.
+
+
+RAM: 8 GB RAM - is enough to store the program data and run the operating system without
+running out of memory for small tasks.
+
+Disk Space: 10GB available disk space - Only minimal storage is needed to install the
+programming environment and save a few small program files.
+
+Special Considerations:
+
+   -​ No special hardware required.
+   -​ Basic CPU is sufficient; no GPU or parallel processing needed.
+
+Software Requirements
+Software Tools and Resources
+
+   1.​ Operating System
+
+          ○​ Windows: The application can be developed and run on Windows, which is
+
+              widely used and supports various development tools.
+
+   2.​ Development Environment
+
+          ○​ Integrated Development Environments (IDEs):
+
+                  ■​ Visual Studio Code: A lightweight, versatile code editor that supports
+
+                     multiple programming languages and various extensions for enhanced
+
+                     functionality.
+
+   3.​ Version Control System
+
+          ○​ Git: A version control system for tracking changes in the codebase, facilitating
+
+              collaboration among team members.
+
+
+Programming Languages and Libraries
+
+   1.​ Programming Languages
+
+          ○​ Python: Chosen for its readability and extensive libraries that simplify
+             mathematical computations and data handling, making it ideal for implementing
+             algorithms.
+          ○​ Java: An alternative option for those familiar with object-oriented programming,
+             providing robust libraries for data manipulation and algorithm implementation.
+   2.​ Libraries and Frameworks:
+
+   ●​ NumPy: For numerical computing with support for multi-dimensional arrays.
+   ●​ SciPy: For optimization and linear algebra.
+   ●​ Pandas: For data manipulation and analysis.
+   ●​ Matplotlib: This is used to create visualizations of ranking results.
+   ●​ Scikit-learn: For data mining and potential machine learning applications.
+

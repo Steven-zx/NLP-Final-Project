@@ -207,7 +207,10 @@ function displayResult(result) {
     const actionabilityConfidence = typeof actionability.confidence === 'number'
         ? ` ${(actionability.confidence * 100).toFixed(1)}%`
         : '';
-    document.getElementById('actionabilityText').textContent = `${actionability.display_name || 'Pending'}${actionabilityConfidence}`;
+    const actionabilityElement = document.getElementById('actionabilityText');
+    const actionabilityLabel = actionability.display_name || 'Pending';
+    actionabilityElement.textContent = `${actionabilityLabel}${actionabilityConfidence}`;
+    actionabilityElement.className = `actionability-badge ${String(actionability.label || '').replace('_', '-')}`;
     document.getElementById('inferenceTime').textContent = `${result.inference_time_ms.toFixed(2)} ms`;
 
     const preprocessing = result.preprocessing || {};

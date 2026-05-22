@@ -413,7 +413,7 @@
 
         .result-summary {
             display: grid;
-            grid-template-columns: 1.08fr 0.72fr 0.92fr;
+            grid-template-columns: 1.08fr 0.72fr 0.9fr 0.92fr;
             gap: 8px;
             padding: 10px;
             border: 1px solid var(--line);
@@ -436,7 +436,8 @@
         }
 
         .category-badge,
-        .urgency-badge {
+        .urgency-badge,
+        .actionability-badge {
             display: inline-flex;
             align-items: center;
             width: fit-content;
@@ -486,6 +487,22 @@
         .urgency-moderate .urgency-badge {
             color: #7A4D00;
             background: #FFF0C2;
+        }
+
+        .actionability-badge {
+            padding: 9px 12px;
+            color: #075985;
+            background: #E0F2FE;
+        }
+
+        .actionability-badge.actionable {
+            color: #0F5B2A;
+            background: #E5F7EC;
+        }
+
+        .actionability-badge.non-actionable {
+            color: #5B21B6;
+            background: #EDE9FE;
         }
 
         .confidence-row {
@@ -1156,6 +1173,10 @@ Example: Need rescue sa Brgy. San Isidro, baha na hanggang bubong. May bata at s
                                 <strong id="urgencyText" class="urgency-badge"></strong>
                             </div>
                             <div class="result-stat">
+                                <span>Actionability</span>
+                                <strong id="actionabilityText" class="actionability-badge"></strong>
+                            </div>
+                            <div class="result-stat">
                                 <span>Confidence Score</span>
                                 <div class="confidence-row">
                                     <strong id="confidenceScore"></strong>
@@ -1184,10 +1205,6 @@ Example: Need rescue sa Brgy. San Isidro, baha na hanggang bubong. May bata at s
                             <div class="detail-item">
                                 <span>Model</span>
                                 <p id="modelUsed"></p>
-                            </div>
-                            <div class="detail-item">
-                                <span>Actionability</span>
-                                <p id="actionabilityText"></p>
                             </div>
                             <div class="detail-item">
                                 <span>Final Tokens</span>
