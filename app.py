@@ -20,7 +20,7 @@ from typing import Any, Dict, List
 import joblib
 import numpy as np
 import torch
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
@@ -160,7 +160,7 @@ logger = setup_logging()
 
 
 def create_app() -> Flask:
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="assets", static_url_path="/assets")
     CORS(app, resources={r"/api/*": {"origins": "*"}})
     app.config["JSON_AS_ASCII"] = False
     return app
@@ -424,6 +424,17 @@ def bad_request(error):
 def internal_error(error):
     logger.error("Internal server error: %s\n%s", error, traceback.format_exc())
     return jsonify({"success": False, "error": "Internal Server Error"}), 500
+
+
+@app.route("/", methods=["GET"])
+@app.route("/index.html", methods=["GET"])
+def serve_frontend():
+    return send_from_directory(".", "index.html")
+
+
+@app.route("/main.js", methods=["GET"])
+def serve_main_js():
+    return send_from_directory(".", "main.js")
 
 
 @app.route("/api/health", methods=["GET"])

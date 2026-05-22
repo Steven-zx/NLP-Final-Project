@@ -3,7 +3,7 @@
  */
 
 const CONFIG = {
-    API_BASE_URL: 'http://localhost:5000',
+    API_BASE_URL: window.location.protocol === 'file:' ? 'http://localhost:5000' : '',
     API_TIMEOUT_MS: 30000,
     MAX_TEXT_LENGTH: 5000,
     DEFAULT_MODEL: 'transformer'
